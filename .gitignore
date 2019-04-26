@@ -1,1 +1,8 @@
 /nbproject/private/
+/PaxAsteroids/OSGiCommon/target/
+/PaxAsteroids/OSGiCore/target/
+/PaxAsteroids/OSGiCommonAsteroids/target/
+/PaxAsteroids/OSGiCommonBullet/target/
+/PaxAsteroids/OSGiCommonPlayer/target/
+/PaxAsteroids/OSGiPlayer/target/
+/PaxAsteroids/OSGiMap/target/
