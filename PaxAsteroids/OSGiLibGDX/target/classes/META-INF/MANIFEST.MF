@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.build.OSGiLibGDX
-Built-By: borga
+Built-By: Bruger
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1556266005782
+Bnd-LastModified: 1556269608505
 Embed-Dependency: *
 Import-Package: com.badlogic.gdx,com.badlogic.gdx.assets,com.badlogic.
  gdx.assets.loaders,com.badlogic.gdx.assets.loaders.resolvers,com.badl

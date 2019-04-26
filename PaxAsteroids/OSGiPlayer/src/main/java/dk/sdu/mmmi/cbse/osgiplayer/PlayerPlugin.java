@@ -25,21 +25,18 @@ public class PlayerPlugin implements IGamePluginService {
     }
 
     private Entity createPlayerShip(GameData gameData) {
-        Entity enemyShip = new Player();
-
-        float deacceleration = 10;
-        float acceleration = 200;
-        float maxSpeed = 300;
-        float rotationSpeed = 5;
-        float x = gameData.getDisplayWidth() / 3;
-        float y = gameData.getDisplayHeight() / 3;
+        Entity playerShip = new Player();
+        float speed = 150;
+        float deceleration = 1000;
+        float x = gameData.getDisplayWidth() / 2;
+        float y = gameData.getDisplayHeight() / 2;
         float radians = 3.1415f / 2;
-        enemyShip.add(new LifePart(3));
-        enemyShip.setRadius(4);
-        enemyShip.add(new MovingPart(deacceleration, acceleration, maxSpeed, rotationSpeed));
-        enemyShip.add(new PositionPart(x, y, radians));
+        playerShip.add(new LifePart(3));
+        playerShip.setRadius(4);
+        playerShip.add(new MovingPart(speed, deceleration));
+        playerShip.add(new PositionPart(x, y, radians));
         
-        return enemyShip;
+        return playerShip;
     }
 
     @Override

@@ -17,45 +17,25 @@ import static java.lang.Math.sqrt;
  */
 public class MovingPart implements EntityPart {
 
-    private float dx, dy;
-    private float deceleration, acceleration;
-    private float maxSpeed, rotationSpeed;
-    private boolean left, right, up;
+    private double dx, dy;
+    private float speed, deceleration;
+    private boolean left, right, up, down;
 
-    public MovingPart(float deceleration, float acceleration, float maxSpeed, float rotationSpeed) {
-        this.deceleration = deceleration;
-        this.acceleration = acceleration;
-        this.maxSpeed = maxSpeed;
-        this.rotationSpeed = rotationSpeed;
+    public MovingPart(float Speed, float Deceleration) {
+        this.speed = Speed;
+        this.deceleration = Deceleration;
     }
 
-    public float getDx() {
+    public double getDx() {
         return dx;
     }
 
-    public float getDy() {
+    public double getDy() {
         return dy;
     }
-    
-    public void setDeceleration(float deceleration) {
-        this.deceleration = deceleration;
-    }
 
-    public void setAcceleration(float acceleration) {
-        this.acceleration = acceleration;
-    }
-
-    public void setMaxSpeed(float maxSpeed) {
-        this.maxSpeed = maxSpeed;
-    }
-    
     public void setSpeed(float speed) {
-        this.acceleration = speed;
-        this.maxSpeed = speed;
-    }
-
-    public void setRotationSpeed(float rotationSpeed) {
-        this.rotationSpeed = rotationSpeed;
+        this.speed = speed;
     }
 
     public void setLeft(boolean left) {
@@ -69,6 +49,10 @@ public class MovingPart implements EntityPart {
     public void setUp(boolean up) {
         this.up = up;
     }
+    
+    public void setDown(boolean down) {
+        this.down = down;
+    }
 
     @Override
     public void process(GameData gameData, Entity entity) {
@@ -80,18 +64,57 @@ public class MovingPart implements EntityPart {
 
         // turning
         if (left) {
-            radians += rotationSpeed * dt;
+            dy = 0;
+            dx= -speed;
         }
 
         if (right) {
-            radians -= rotationSpeed * dt;
+            dy = 0;
+            dx = speed;
         }
 
         // accelerating            
         if (up) {
-            dx += cos(radians) * acceleration * dt;
-            dy += sin(radians) * acceleration * dt;
+            dy = speed;
+            dx = 0;
         }
+        
+        if (down) {
+            dy = -speed;
+            dx = 0;
+        }
+        
+        if (up && left) {
+            dy = speed;
+            dx = -speed;
+        }
+        
+        if (up && right) {
+            dy = speed;
+            dx = speed;
+        }
+        
+        if (down && left) {
+            dy = -speed;
+            dx = -speed;
+        }
+        
+        if (down && right) {
+            dy = -speed;
+            dx = speed;
+        }
+        
+        if (up && down) {
+            dy = 0;
+            dx = 0;
+        }
+        
+        if (right && left) {
+            dy = 0;
+            dx = 0;
+        }
+        
+        
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
@@ -99,9 +122,9 @@ public class MovingPart implements EntityPart {
             dx -= (dx / vec) * deceleration * dt;
             dy -= (dy / vec) * deceleration * dt;
         }
-        if (vec > maxSpeed) {
-            dx = (dx / vec) * maxSpeed;
-            dy = (dy / vec) * maxSpeed;
+        if (vec > speed) {
+            dx = (dx / vec) * speed;
+            dy = (dy / vec) * speed;
         }
 
         // set position
