@@ -47,14 +47,14 @@ public class MapRenderer implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
-        camera.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+//        camera.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
         
         camera.update();
         renderer.setView(camera);
         renderer.render();
         renderer.getBatch().begin();
-        player.draw(renderer.getBatch());
-        player.setSize(25, 30);
+//        player.draw(renderer.getBatch());
+//        player.setSize(25, 30);
         renderer.getBatch().end();
 
     }
@@ -86,7 +86,7 @@ public class MapRenderer implements Screen {
     public void dispose() {
         map.dispose();
         renderer.dispose();
-        player.getTexture().dispose();
+//        player.getTexture().dispose();
     }
 
 }

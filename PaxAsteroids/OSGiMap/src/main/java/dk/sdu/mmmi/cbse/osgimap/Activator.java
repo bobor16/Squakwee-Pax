@@ -22,7 +22,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bc) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Map stop");
     }
 
 }

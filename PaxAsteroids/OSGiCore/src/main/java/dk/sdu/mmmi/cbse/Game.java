@@ -53,7 +53,7 @@ public class Game implements ApplicationListener {
         cfg.height = 600;
         cfg.useGL30 = false;
         cfg.resizable = false;
-        new LwjglApplication(new TileGameMap(), cfg);
+        new LwjglApplication(this, cfg);
     }
 
     @Override
