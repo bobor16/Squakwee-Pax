@@ -10,6 +10,7 @@ import static dk.sdu.mmmi.cbse.common.data.GameKeys.UP;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
 import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
@@ -30,7 +31,7 @@ public class PlayerProcessor implements IEntityProcessingService {
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
 
             movingPart.process(gameData, entity);
-            positionPart.process(gameData, entity);            
+            positionPart.process(gameData, entity);
             updateShape(entity);
 
         }

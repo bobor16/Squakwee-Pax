@@ -108,6 +108,8 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
+        this.assetManager.update();
+        this.assetManager.finishLoading();
         // Update
         for (IEntityProcessingService entityProcessorService : entityProcessorList) {
             entityProcessorService.process(gameData, world);
@@ -118,6 +120,12 @@ public class Game implements ApplicationListener {
             postEntityProcessorService.process(gameData, world);
 
         }
+        for (Entity entity : world.getEntities()) {
+            if(this.sprites.containsKey(entity.getID())){
+                PositionPart position = entity.getPart(PositionPart.class);
+                this.sprites.get(entity.getID()).setPosition(position.getX(), position.getY());
+            }
+        }
     }
 
     private void draw() {
@@ -127,9 +135,17 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
             } else {
                 SpritePart spritePart = entity.getPart(SpritePart.class);
-                String location = spritePart.getSpriteLocation();
+                String location = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
                 this.assetManager.load(location, Texture.class);
-                this.assetManager.finishLoading();
+                this.assetManager.update();
+                System.out.println(this.assetManager.getLoadedAssets());
+                while (!this.assetManager.update()) {
+                    System.out.println(this.assetManager.getProgress());
+                }
+                System.out.println(this.assetManager.getLoadedAssets());
+                for (String assetName : this.assetManager.getAssetNames()) {
+                    System.out.println(assetName);
+                }
                 if (this.assetManager.isLoaded(location, Texture.class)) {
                     System.out.println("Sprite Loaded");
                 } else {

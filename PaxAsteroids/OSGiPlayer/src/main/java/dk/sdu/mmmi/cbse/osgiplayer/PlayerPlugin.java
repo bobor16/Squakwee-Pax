@@ -47,8 +47,9 @@ public class PlayerPlugin implements IGamePluginService {
         playerShip.setRadius(4);
         playerShip.add(new MovingPart(speed, deceleration));
         playerShip.add(new PositionPart(x, y, radians));
-        String filename = "/player.png";
+        /*String filename = "/player.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
+        System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
         System.out.println(file.getAbsolutePath());
         File file2 = new File("player2.png");
@@ -58,8 +59,8 @@ public class PlayerPlugin implements IGamePluginService {
         } catch (IOException ex) {
             Logger.getLogger(PlayerPlugin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String spriteLocation = file2.getAbsolutePath(); /*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
-        playerShip.add(new SpritePart(spriteLocation));
+        String spriteLocation = file2.getAbsolutePath(); /*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";
+        playerShip.add(new SpritePart(spriteLocation));*/
         
         return playerShip;
     }
