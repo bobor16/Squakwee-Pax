@@ -3,6 +3,7 @@ package dk.sdu.mmmi.cbse;
 //import dk.sdu.mmmi.cbse.osgimap.TileGameMap;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
@@ -16,12 +17,22 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolver;
+import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolverTest;
 import dk.sdu.mmmi.cbse.core.managers.GameInputProcessor;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 
@@ -39,6 +50,8 @@ public class Game implements ApplicationListener {
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
     private static final List<IGamePluginService> gamePluginList = new CopyOnWriteArrayList<>();
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
+    private AssetManager assetManager;
+    private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
 
     public Game() {
         init();
@@ -60,6 +73,9 @@ public class Game implements ApplicationListener {
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
+        //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
+        assetManager = new AssetManager();
+        batch = new SpriteBatch();
 
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
@@ -105,23 +121,27 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
+        batch.begin();
         for (Entity entity : world.getEntities()) {
-            sr.setColor(1, 1, 1, 1);
-
-            sr.begin(ShapeRenderer.ShapeType.Line);
-
-            float[] shapex = entity.getShapeX();
-            float[] shapey = entity.getShapeY();
-
-            for (int i = 0, j = shapex.length - 1;
-                    i < shapex.length;
-                    j = i++) {
-
-                sr.line(shapex[i], shapey[i], shapex[j], shapey[j]);
+            if (sprites.containsKey(entity.getID())) {
+                sprites.get(entity.getID()).draw(batch);
+            } else {
+                SpritePart spritePart = entity.getPart(SpritePart.class);
+                String location = spritePart.getSpriteLocation();
+                this.assetManager.load(location, Texture.class);
+                this.assetManager.finishLoading();
+                if (this.assetManager.isLoaded(location, Texture.class)) {
+                    System.out.println("Sprite Loaded");
+                } else {
+                    System.out.println("Sprite Not Loaded");
+                }
+                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class));
+                PositionPart position = entity.getPart(PositionPart.class);
+                sprite.setPosition(position.getX(), position.getY());
+                sprites.put(entity.getID(), sprite);
             }
-
-            sr.end();
         }
+        batch.end();
     }
 
     @Override
@@ -151,7 +171,6 @@ public class Game implements ApplicationListener {
     public void addGamePluginService(IGamePluginService plugin) {
         this.gamePluginList.add(plugin);
         plugin.start(gameData, world);
-
     }
 
     public void removeGamePluginService(IGamePluginService plugin) {
