@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
@@ -52,7 +53,8 @@ public class Game implements ApplicationListener {
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
     private AssetManager assetManager;
     private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
-
+    private TiledMap map;
+private OrthogonalTiledMapRenderer renderer;
     public Game() {
         init();
         this.bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
@@ -71,11 +73,15 @@ public class Game implements ApplicationListener {
 
     @Override
     public void create() {
+        TmxMapLoader loader = new TmxMapLoader();
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Group7\\Squakwee\\OSGiMap\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
         assetManager = new AssetManager();
         batch = new SpriteBatch();
+                renderer = new OrthogonalTiledMapRenderer(map);
+
 
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
@@ -97,6 +103,8 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         gameData.getKeys().update();
+        renderer.setView(cam);
+        renderer.render();
 
         update();
         draw();
@@ -121,9 +129,11 @@ public class Game implements ApplicationListener {
 
         }
         for (Entity entity : world.getEntities()) {
-            if(this.sprites.containsKey(entity.getID())){
+            if (this.sprites.containsKey(entity.getID())) {
                 PositionPart position = entity.getPart(PositionPart.class);
                 this.sprites.get(entity.getID()).setPosition(position.getX(), position.getY());
+                
+                
             }
         }
     }
@@ -135,7 +145,7 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
             } else {
                 SpritePart spritePart = entity.getPart(SpritePart.class);
-                String location = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
+                String location = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiMap/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
                 this.assetManager.load(location, Texture.class);
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
@@ -155,6 +165,8 @@ public class Game implements ApplicationListener {
                 PositionPart position = entity.getPart(PositionPart.class);
                 sprite.setPosition(position.getX(), position.getY());
                 sprites.put(entity.getID(), sprite);
+
+                sprite.setSize(25, 30);
             }
         }
         batch.end();
