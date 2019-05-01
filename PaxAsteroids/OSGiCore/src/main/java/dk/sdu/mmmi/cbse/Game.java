@@ -29,6 +29,7 @@ import org.osgi.framework.FrameworkUtil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -57,7 +58,7 @@ public class Game implements ApplicationListener {
     private OrthogonalTiledMapRenderer renderer;
 
     //Collision
-    private TiledMapTileLayer collisionLayer;
+    private MapLayer collisionLayer;
     private String blockedKey = "blocked";
     private TiledMapTileSet s;
 
@@ -92,7 +93,7 @@ public class Game implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("D:\\Projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
@@ -156,8 +157,7 @@ public class Game implements ApplicationListener {
                 Rectangle playerRect = rectPool.obtain();
                 playerRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
 
-                int objectLayerID = 0;
-                collisionLayer = (TiledMapTileLayer) map.getLayers().get(objectLayerID);
+                collisionLayer = map.getLayers().get("blocked");
                 MapObjects objects = collisionLayer.getObjects();
 
                 for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
@@ -178,7 +178,7 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
             } else {
                 SpritePart spritePart = entity.getPart(SpritePart.class);
-                String location = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiCore/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
+                String location = spritePart.getSpriteLocation();
                 this.assetManager.load(location, Texture.class);
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
