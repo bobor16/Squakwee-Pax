@@ -17,12 +17,13 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext bc) throws Exception {
-        bc.registerService(IEntityProcessingService.class, new MapChooser(), null);
+//        bc.registerService(IEntityProcessingService.class, new MapChooser(), null);
+        System.out.println("Hello from Map");
     }
 
     @Override
     public void stop(BundleContext bc) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
 }

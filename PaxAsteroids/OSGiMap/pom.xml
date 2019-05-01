@@ -62,7 +62,8 @@
                 <configuration>
                     <instructions>
                         <Bundle-Activator>dk.sdu.mmmi.osgimap.Activator</Bundle-Activator>
-                        <Export-Package />
+                        <Export-Package >dk.sdu.mmmi.cbse.osgimap</Export-Package>
+                        <Private-Package>dk.sdu.mmmi.cbse.osgimap.*</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>

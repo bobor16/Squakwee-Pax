@@ -2,15 +2,12 @@ package dk.sdu.mmmi.cbse;
 
 //import dk.sdu.mmmi.cbse.osgimap.TileGameMap;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -23,19 +20,22 @@ import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
-import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolver;
-import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolverTest;
 import dk.sdu.mmmi.cbse.core.managers.GameInputProcessor;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Pool;
 
 public class Game implements ApplicationListener {
 
@@ -45,7 +45,7 @@ public class Game implements ApplicationListener {
     private ShapeRenderer sr;
     private SpriteBatch batch;
     private Texture texture;
-    private Sprite sprite, spriteMap;
+//    private Sprite sprite, spriteMap;
     private final GameData gameData = new GameData();
     private static World world = new World();
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
@@ -54,7 +54,25 @@ public class Game implements ApplicationListener {
     private AssetManager assetManager;
     private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
     private TiledMap map;
-private OrthogonalTiledMapRenderer renderer;
+    private OrthogonalTiledMapRenderer renderer;
+
+    //Collision
+    private TiledMapTileLayer collisionLayer;
+    private String blockedKey = "blocked";
+    private TiledMapTileSet s;
+
+    private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
+
+        @Override
+
+        protected Rectangle newObject() {
+
+            return new Rectangle();
+
+        }
+
+    };
+
     public Game() {
         init();
         this.bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
@@ -74,14 +92,13 @@ private OrthogonalTiledMapRenderer renderer;
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Group7\\Squakwee\\OSGiMap\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
         assetManager = new AssetManager();
         batch = new SpriteBatch();
-                renderer = new OrthogonalTiledMapRenderer(map);
-
+        renderer = new OrthogonalTiledMapRenderer(map);
 
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
@@ -90,6 +107,7 @@ private OrthogonalTiledMapRenderer renderer;
         sr = new ShapeRenderer();
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+
     }
 
     @Override
@@ -131,9 +149,24 @@ private OrthogonalTiledMapRenderer renderer;
         for (Entity entity : world.getEntities()) {
             if (this.sprites.containsKey(entity.getID())) {
                 PositionPart position = entity.getPart(PositionPart.class);
-                this.sprites.get(entity.getID()).setPosition(position.getX(), position.getY());
-                
-                
+                Sprite sprite = this.sprites.get(entity.getID());
+
+                sprite.setPosition(position.getX(), position.getY());
+
+                Rectangle playerRect = rectPool.obtain();
+                playerRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
+
+                int objectLayerID = 0;
+                collisionLayer = (TiledMapTileLayer) map.getLayers().get(objectLayerID);
+                MapObjects objects = collisionLayer.getObjects();
+
+                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                    System.out.println("There seems to be a rectangle around here somewhere");
+                    Rectangle rectangle = rectangleObject.getRectangle();
+                    if (Intersector.overlaps(rectangle, playerRect)) {
+                        System.out.println("Collision");
+                    }
+                }
             }
         }
     }
@@ -145,7 +178,7 @@ private OrthogonalTiledMapRenderer renderer;
                 sprites.get(entity.getID()).draw(batch);
             } else {
                 SpritePart spritePart = entity.getPart(SpritePart.class);
-                String location = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiMap/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
+                String location = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiCore/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
                 this.assetManager.load(location, Texture.class);
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
@@ -165,8 +198,8 @@ private OrthogonalTiledMapRenderer renderer;
                 PositionPart position = entity.getPart(PositionPart.class);
                 sprite.setPosition(position.getX(), position.getY());
                 sprites.put(entity.getID(), sprite);
-
                 sprite.setSize(25, 30);
+
             }
         }
         batch.end();
