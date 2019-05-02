@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <relativePath>../poms/compiled/</relativePath>
+        <groupId>dk.sdu.mmmi.build</groupId>
+        <artifactId>compiled-bundle-settings</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <properties>
+        <bundle.symbolicName>dk.sdu.mmmi.cbse.osgienemy</bundle.symbolicName>
+        <bundle.namespace>dk.sdu.mmmi.cbse</bundle.namespace>
+    </properties>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>OSGiEnemy</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <name>OSGiEnemy</name>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>OSGiCommon</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Export-Package>!dk.sdu.mmmi.internal.*,dk.sdu.mmmi.*;version="1.0-SNAPSHOT",dk.sdu.mmmi.cbse.osgienemy</Export-Package>
+                        <Private-Package>dk.sdu.mmmi.cbse.osgienemy.*</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
