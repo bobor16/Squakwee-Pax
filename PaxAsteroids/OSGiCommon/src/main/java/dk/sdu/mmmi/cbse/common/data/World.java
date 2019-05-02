@@ -13,6 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World {
 
     private final Map<String, Entity> entityMap = new ConcurrentHashMap<>();
+    private float[] playerSpawn = new float[2];
+
+    public float[] getPlayerSpawn() {
+        return playerSpawn;
+    }
+
+    public void setPlayerSpawn(float[] playerSpawn) {
+        this.playerSpawn = playerSpawn;
+    }
 
     public String addEntity(Entity entity) {
         entityMap.put(entity.getID(), entity);
@@ -26,7 +35,7 @@ public class World {
     public void removeEntity(Entity entity) {
         entityMap.remove(entity.getID());
     }
-    
+
     public Collection<Entity> getEntities() {
         return entityMap.values();
     }

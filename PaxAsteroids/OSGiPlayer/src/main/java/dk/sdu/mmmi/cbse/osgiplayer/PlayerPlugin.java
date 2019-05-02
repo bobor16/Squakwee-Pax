@@ -21,16 +21,16 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void start(GameData gameData, World world) {
         // Add entities to the world
-        Entity player = createPlayer(gameData);
+        Entity player = createPlayer(gameData, world);
         playerID = world.addEntity(player);
     }
 
-    private Entity createPlayer(GameData gameData) {
+    private Entity createPlayer(GameData gameData, World world) {
         Entity playerShip = new Player();
         float speed = 150;
         float deceleration = 1000;
-        float x = gameData.getDisplayWidth() / 2;
-        float y = gameData.getDisplayHeight() / 2;
+        float x = world.getPlayerSpawn()[0];
+        float y = world.getPlayerSpawn()[1];
         float radians = 3.1415f / 2;
         playerShip.add(new LifePart(3, 69));
         playerShip.setRadius(4);
@@ -40,7 +40,7 @@ public class PlayerPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "D:/Projekter/Squakwee-Pax/PaxAsteroids/OSGiCore/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
+        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiCore/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         playerShip.add(new SpritePart(spriteLocation));
@@ -53,7 +53,5 @@ public class PlayerPlugin implements IGamePluginService {
         // Remove entities
         world.removeEntity(playerID);
     }
-    
-    
 
 }

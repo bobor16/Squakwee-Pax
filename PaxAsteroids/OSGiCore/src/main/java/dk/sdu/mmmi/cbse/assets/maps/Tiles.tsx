@@ -2,9 +2,6 @@
 <tileset version="1.2" tiledversion="1.2.3" name="tileset" tilewidth="16" tileheight="16" spacing="1" margin="1" tilecount="435" columns="29">
  <image source="Tiles.png" width="502" height="263"/>
  <tile id="10">
-  <properties>
-   <property name="blocked" value=""/>
-  </properties>
   <objectgroup draworder="index">
    <object id="1" name="blocked" x="0.197658" y="0" width="15.7138" height="16.0103">
     <properties>
@@ -12,6 +9,11 @@
     </properties>
    </object>
   </objectgroup>
+ </tile>
+ <tile id="11">
+  <properties>
+   <property name="blocked" value=""/>
+  </properties>
  </tile>
  <tile id="18">
   <properties>

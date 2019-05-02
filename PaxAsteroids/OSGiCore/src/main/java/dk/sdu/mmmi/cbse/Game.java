@@ -32,11 +32,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
 public class Game implements ApplicationListener {
 
@@ -60,18 +62,18 @@ public class Game implements ApplicationListener {
     //Collision
     private MapLayer collisionLayer;
     private String blockedKey = "blocked";
+    private String blockedFrame = "frame";
     private TiledMapTileSet s;
+
+    //Spawn
+    private MapLayer spawnLayer;
 
     private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 
         @Override
-
         protected Rectangle newObject() {
-
             return new Rectangle();
-
         }
-
     };
 
     public Game() {
@@ -80,7 +82,6 @@ public class Game implements ApplicationListener {
     }
 
     private void init() {
-
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Squakwee";
         cfg.width = 800;
@@ -93,26 +94,38 @@ public class Game implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("D:\\Projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
         assetManager = new AssetManager();
         batch = new SpriteBatch();
-        renderer = new OrthogonalTiledMapRenderer(map);
+        renderer = new OrthogonalTiledMapRenderer(map, gameData.getDisplayWidth() / (map.getProperties().get("width", Integer.class) * 8f));
 
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         cam.update();
 
-        sr = new ShapeRenderer();
-
+//        sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
+
+        spawnLayer = map.getLayers().get("spawnPoint");
+        MapObjects objects = spawnLayer.getObjects();
+
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+            System.out.println("sup");
+            if (rectangleObject.getProperties().containsKey("playerSpawn")) {
+                System.out.println("Hello");
+                float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
+                world.setPlayerSpawn(playerSpawn);
+            }
+        }
 
     }
 
     @Override
     public void dispose() {
+
     }
 
     @Override
@@ -124,7 +137,6 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         renderer.setView(cam);
         renderer.render();
-
         update();
         draw();
 
@@ -153,15 +165,18 @@ public class Game implements ApplicationListener {
                 Sprite sprite = this.sprites.get(entity.getID());
 
                 sprite.setPosition(position.getX(), position.getY());
+//                cam.position.set(sprite.getX(), sprite.getY(), 0);
+//                cam.update();
 
                 Rectangle playerRect = rectPool.obtain();
                 playerRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
 
-                collisionLayer = map.getLayers().get("blocked");
+                collisionLayer = map.getLayers().get(blockedKey);
                 MapObjects objects = collisionLayer.getObjects();
 
                 for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-                    System.out.println("There seems to be a rectangle around here somewhere");
+//                    System.out.println("There seems to be a rectangle around here somewhere");
+
                     Rectangle rectangle = rectangleObject.getRectangle();
                     if (Intersector.overlaps(rectangle, playerRect)) {
                         System.out.println("Collision");
@@ -197,6 +212,7 @@ public class Game implements ApplicationListener {
                 Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class));
                 PositionPart position = entity.getPart(PositionPart.class);
                 sprite.setPosition(position.getX(), position.getY());
+
                 sprites.put(entity.getID(), sprite);
                 sprite.setSize(25, 30);
 

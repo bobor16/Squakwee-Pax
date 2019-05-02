@@ -7,8 +7,6 @@ package dk.sdu.mmmi.cbse.common.data.entityparts;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 
 /**
@@ -49,7 +47,7 @@ public class MovingPart implements EntityPart {
     public void setUp(boolean up) {
         this.up = up;
     }
-    
+
     public void setDown(boolean down) {
         this.down = down;
     }
@@ -65,7 +63,7 @@ public class MovingPart implements EntityPart {
         // turning
         if (left) {
             dy = 0;
-            dx= -speed;
+            dx = -speed;
         }
 
         if (right) {
@@ -78,43 +76,41 @@ public class MovingPart implements EntityPart {
             dy = speed;
             dx = 0;
         }
-        
+
         if (down) {
             dy = -speed;
             dx = 0;
         }
-        
+
         if (up && left) {
             dy = speed;
             dx = -speed;
         }
-        
+
         if (up && right) {
             dy = speed;
             dx = speed;
         }
-        
+
         if (down && left) {
             dy = -speed;
             dx = -speed;
         }
-        
+
         if (down && right) {
             dy = -speed;
             dx = speed;
         }
-        
+
         if (up && down) {
             dy = 0;
             dx = 0;
         }
-        
+
         if (right && left) {
             dy = 0;
             dx = 0;
         }
-        
-        
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
@@ -131,16 +127,14 @@ public class MovingPart implements EntityPart {
         x += dx * dt;
         if (x > gameData.getDisplayWidth()) {
             x = 0;
-        }
-        else if (x < 0) {
+        } else if (x < 0) {
             x = gameData.getDisplayWidth();
         }
 
         y += dy * dt;
         if (y > gameData.getDisplayHeight()) {
             y = 0;
-        }
-        else if (y < 0) {
+        } else if (y < 0) {
             y = gameData.getDisplayHeight();
         }
 
