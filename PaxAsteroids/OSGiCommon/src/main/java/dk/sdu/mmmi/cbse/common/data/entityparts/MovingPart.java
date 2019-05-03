@@ -17,7 +17,7 @@ public class MovingPart implements EntityPart {
 
     private double dx, dy;
     private float speed, deceleration;
-    private boolean left, right, up, down;
+    private boolean left, right, up, down, moving;
 
     public MovingPart(float Speed, float Deceleration) {
         this.speed = Speed;
@@ -38,6 +38,26 @@ public class MovingPart implements EntityPart {
 
     public void setLeft(boolean left) {
         this.left = left;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public boolean isLeft() {
+        return left;
+    }
+
+    public boolean isRight() {
+        return right;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public boolean isDown() {
+        return down;
     }
 
     public void setRight(boolean right) {

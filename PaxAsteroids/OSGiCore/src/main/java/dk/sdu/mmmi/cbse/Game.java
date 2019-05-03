@@ -40,10 +40,11 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 // Player
-import com.badlogic.gdx.math.Vector2;
+import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 
 public class Game implements ApplicationListener {
 
@@ -70,11 +71,6 @@ public class Game implements ApplicationListener {
     private String blockedFrame = "frame";
     private String playerSpawn = "playerSpawn";
     private TiledMapTileSet s;
-
-    //Player / colliding
-    private Vector2 velocity = new Vector2();
-    private float speed = 60 * 2, gravity = 60 * 1.8f;
-    private TiledMapTileLayer colliding;
 
     //Spawn
     private MapLayer spawnLayer;
@@ -173,87 +169,37 @@ public class Game implements ApplicationListener {
         // Post Update
         for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
-
         }
+
         for (Entity entity : world.getEntities()) {
             if (this.sprites.containsKey(entity.getID())) {
                 PositionPart position = entity.getPart(PositionPart.class);
                 Sprite sprite = this.sprites.get(entity.getID());
+                MovingPart moving = entity.getPart(MovingPart.class);
                 sprite.setPosition(position.getX(), position.getY());
 
-//                cam.position.set(sprite.getX(), sprite.getY(), 0);
-//                cam.position.set(position.getX(), position.getY(), 0);
-//                cam.update();
                 Rectangle playerRect = rectPool.obtain();
-                playerRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
+                playerRect.set(position.getX(),
+                        position.getY(),
+                        sprite.getWidth(),
+                        sprite.getHeight());
 
                 collisionLayer = map.getLayers().get(blockedKey);
                 MapObjects objects = collisionLayer.getObjects();
-                colliding = (TiledMapTileLayer) map.getLayers().get(0);
-                //Apply gravity
-                velocity.y -= gravity * gameData.getDelta();
-                // clamp velocity
-                if (velocity.y > speed) {
-                    velocity.y = speed;
-                } else if (velocity.y < speed) {
-                    velocity.y = -speed;
+
+                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+//                    System.out.println("There seems to be a rectangle around here somewhere");
+                    Rectangle rectangle = rectangleObject.getRectangle();
+                    if (Intersector.overlaps(rectangle, playerRect)) {
+                        position.setX(position.getOldX());
+                        position.setY(position.getOldY());
+                    } else {
+                        position.setOldX(position.getX());
+                        position.setOldY(position.getY());
+                    }
+//                    cam.position.set(playerRect.getX(), playerRect.getY(), 0);
+//                    cam.update();
                 }
-
-                //Save old position
-                float oldX = playerRect.getX(),
-                        oldY = playerRect.getY(),
-                        tileWidth = colliding.getTileWidth(),
-                        tileHeight = colliding.getTileHeight();
-
-                boolean collisionX = false, collisionY = false;
-
-                // Move on x
-                playerRect.setX(playerRect.getX() + velocity.x * gameData.getDelta());
-                if (velocity.x < 0) {
-                    // Collision top left
-                    collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / tileHeight))
-                            .getTile().getProperties().containsKey(blockedKey);
-                    if (collisionX == true) {
-                    }
-                    // middle left
-                    if (!collisionX) {
-                        collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight() / 2) / tileHeight))
-                                .getTile().getProperties().containsKey(blockedKey);
-                    }
-                    // bottom left
-                    if (!collisionX) {
-                        collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() / tileHeight)))
-                                .getTile().getProperties().containsKey(blockedKey);
-                    } else if (velocity.y > 0) {
-                        // top left
-                        collisionY = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / playerRect.getHeight()))
-                                .getTile().getProperties().containsKey("blocked");
-                        // top middle 
-                        if (!collisionY) {
-                            collisionY = colliding.getCell((int) ((playerRect.getX() + playerRect.getWidth()) / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / tileHeight))
-                                    .getTile().getProperties().containsKey("blocked");
-                        }
-                        // top right
-                        if (!collisionY) {
-                            collisionY = colliding.getCell((int) ((playerRect.getX() + playerRect.getWidth()) / tileWidth), (int) (playerRect.getY() + playerRect.getHeight() / tileHeight))
-                                    .getTile().getProperties().containsKey("blocked");
-
-                        }
-                    }
-                    //         react to y collision
-                    if (collisionY) {
-                        playerRect.setY(oldY);
-                        velocity.x = 0;
-                    }
-                }
-
-//                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-////                    System.out.println("There seems to be a rectangle around here somewhere");
-//                    Rectangle rectangle = rectangleObject.getRectangle();
-//                    if (Intersector.overlaps(rectangle, playerRect)) {
-//                        System.out.println("Collision");
-//                    }
-//                }
             }
         }
     }
@@ -263,10 +209,14 @@ public class Game implements ApplicationListener {
         for (Entity entity : world.getEntities()) {
             if (sprites.containsKey(entity.getID())) {
                 sprites.get(entity.getID()).draw(batch);
+
             } else {
-                SpritePart spritePart = entity.getPart(SpritePart.class);
+                SpritePart spritePart = entity.getPart(SpritePart.class
+                );
                 String location = spritePart.getSpriteLocation();
-                this.assetManager.load(location, Texture.class);
+
+                this.assetManager.load(location, Texture.class
+                );
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
                 while (!this.assetManager.update()) {
@@ -275,14 +225,19 @@ public class Game implements ApplicationListener {
                 System.out.println(this.assetManager.getLoadedAssets());
                 for (String assetName : this.assetManager.getAssetNames()) {
                     System.out.println(assetName);
+
                 }
-                if (this.assetManager.isLoaded(location, Texture.class)) {
+                if (this.assetManager.isLoaded(location, Texture.class
+                )) {
                     System.out.println("Sprite Loaded");
                 } else {
                     System.out.println("Sprite Not Loaded");
+
                 }
-                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class));
-                PositionPart position = entity.getPart(PositionPart.class);
+                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class
+                ));
+                PositionPart position = entity.getPart(PositionPart.class
+                );
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);

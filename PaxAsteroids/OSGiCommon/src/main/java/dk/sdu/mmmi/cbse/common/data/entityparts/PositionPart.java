@@ -16,7 +16,25 @@ public class PositionPart implements EntityPart {
 
     private float x;
     private float y;
-    private float radians;
+//    private float radians;
+    private float oldX;
+    private float oldY;
+
+    public float getOldX() {
+        return oldX;
+    }
+
+    public void setOldX(float oldX) {
+        this.oldX = oldX;
+    }
+
+    public float getOldY() {
+        return oldY;
+    }
+
+    public void setOldY(float oldY) {
+        this.oldY = oldY;
+    }
 
     public PositionPart(float x, float y/*, float radians*/) {
         this.x = x;
@@ -35,11 +53,10 @@ public class PositionPart implements EntityPart {
 //    public float getRadians() {
 //        return radians;
 //    }
-    
     public void setX(float newX) {
         this.x = newX;
     }
-    
+
     public void setY(float newY) {
         this.y = newY;
     }
@@ -52,12 +69,8 @@ public class PositionPart implements EntityPart {
 //    public void setRadians(float radians) {
 //        this.radians = radians;
 //    }
-
     @Override
     public void process(GameData gameData, Entity entity) {
     }
-    
-    
-    
-    
+
 }

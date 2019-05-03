@@ -5,10 +5,30 @@
  */
 package dk.sdu.mmmi.cbse.common.data.entityparts;
 
+import dk.sdu.mmmi.cbse.common.data.Entity;
+import dk.sdu.mmmi.cbse.common.data.GameData;
+import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
+
 /**
  *
  * @author Borgar Bordoy
  */
-public class CollisionPart {
-    
+public class CollisionPart implements IPostEntityProcessingService {
+
+    @Override
+    public void process(GameData gameData, World world) {
+        for (Entity entity : world.getEntities()) {
+            for (Entity e : world.getEntities()) {
+                if (e.getID().equals(entity.getID())) {
+                    continue;
+                }
+
+                PositionPart positionA = entity.getPart(PositionPart.class);
+
+            }
+
+        }
+    }
+
 }
