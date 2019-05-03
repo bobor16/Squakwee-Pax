@@ -17,7 +17,7 @@ public class EnemyProcessor implements IEntityProcessingService {
 
     @Override
     public void process(GameData gameData, World world) {
-        System.out.println("Processing Enemy");
+//        System.out.println("Processing Enemy");
     }
-    
+
 }

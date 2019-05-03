@@ -57,7 +57,7 @@ public class MovingPart implements EntityPart {
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-        float radians = positionPart.getRadians();
+//        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
         // turning
@@ -141,7 +141,7 @@ public class MovingPart implements EntityPart {
         positionPart.setX(x);
         positionPart.setY(y);
 
-        positionPart.setRadians(radians);
+//        positionPart.setRadians(radians);
     }
 
 }

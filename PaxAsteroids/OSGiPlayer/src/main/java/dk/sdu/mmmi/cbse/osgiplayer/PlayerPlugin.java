@@ -31,11 +31,11 @@ public class PlayerPlugin implements IGamePluginService {
         float deceleration = 1000;
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
-        float radians = 3.1415f / 2;
+//        float radians = 3.1415f / 2;
         playerShip.add(new LifePart(3, 69));
         playerShip.setRadius(4);
         playerShip.add(new MovingPart(speed, deceleration));
-        playerShip.add(new PositionPart(x, y, radians));
+        playerShip.add(new PositionPart(x, y/*, radians*/));
         String filename = "/player.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);

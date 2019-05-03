@@ -1,7 +1,6 @@
 package dk.sdu.mmmi.cbse;
 
 //LibGDX
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -13,17 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Pool;
 
 //dk.sdu.mmmi
 import dk.sdu.mmmi.cbse.common.data.Entity;
@@ -49,13 +38,12 @@ import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 
+// Player
+import com.badlogic.gdx.math.Vector2;
 
 public class Game implements ApplicationListener {
 
@@ -80,7 +68,13 @@ public class Game implements ApplicationListener {
     private MapLayer collisionLayer;
     private String blockedKey = "blocked";
     private String blockedFrame = "frame";
+    private String playerSpawn = "playerSpawn";
     private TiledMapTileSet s;
+
+    //Player / colliding
+    private Vector2 velocity = new Vector2();
+    private float speed = 60 * 2, gravity = 60 * 1.8f;
+    private TiledMapTileLayer colliding;
 
     //Spawn
     private MapLayer spawnLayer;
@@ -99,6 +93,8 @@ public class Game implements ApplicationListener {
     }
 
     private void init() {
+        gameData.setDisplayWidth(800);
+        gameData.setDisplayHeight(600);
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Squakwee";
         cfg.width = 800;
@@ -112,15 +108,18 @@ public class Game implements ApplicationListener {
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
         map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
-        gameData.setDisplayWidth(Gdx.graphics.getWidth());
-        gameData.setDisplayHeight(Gdx.graphics.getHeight());
+
+//        gameData.setDisplayWidth(Gdx.graphics.getWidth());
+//        gameData.setDisplayHeight(Gdx.graphics.getHeight());
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
         assetManager = new AssetManager();
         batch = new SpriteBatch();
-        renderer = new OrthogonalTiledMapRenderer(map, gameData.getDisplayWidth() / (map.getProperties().get("width", Integer.class) * 8f));
+//        renderer = new OrthogonalTiledMapRenderer(map, gameData.getDisplayWidth() / (map.getProperties().get("width", Integer.class) * 8f));
+        renderer = new OrthogonalTiledMapRenderer(map);
 
         cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
+//        cam.translate(cam.viewportWidth / 2, cam.viewportHeight / 2);
         cam.update();
 
 //        sr = new ShapeRenderer();
@@ -130,14 +129,13 @@ public class Game implements ApplicationListener {
         MapObjects objects = spawnLayer.getObjects();
 
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-            System.out.println("sup");
-            if (rectangleObject.getProperties().containsKey("playerSpawn")) {
-                System.out.println("Hello");
+//            System.out.println("ther is a spawnpoint");
+            if (rectangleObject.getProperties().containsKey(playerSpawn)) {
                 float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
                 world.setPlayerSpawn(playerSpawn);
+                System.out.println("Player spawn");
             }
         }
-
     }
 
     @Override
@@ -154,6 +152,7 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         renderer.setView(cam);
         renderer.render();
+        cam.update();
         update();
         draw();
 
@@ -180,25 +179,81 @@ public class Game implements ApplicationListener {
             if (this.sprites.containsKey(entity.getID())) {
                 PositionPart position = entity.getPart(PositionPart.class);
                 Sprite sprite = this.sprites.get(entity.getID());
-
                 sprite.setPosition(position.getX(), position.getY());
-//                cam.position.set(sprite.getX(), sprite.getY(), 0);
-//                cam.update();
 
+//                cam.position.set(sprite.getX(), sprite.getY(), 0);
+//                cam.position.set(position.getX(), position.getY(), 0);
+//                cam.update();
                 Rectangle playerRect = rectPool.obtain();
                 playerRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
 
                 collisionLayer = map.getLayers().get(blockedKey);
                 MapObjects objects = collisionLayer.getObjects();
+                colliding = (TiledMapTileLayer) map.getLayers().get(0);
+                //Apply gravity
+                velocity.y -= gravity * gameData.getDelta();
+                // clamp velocity
+                if (velocity.y > speed) {
+                    velocity.y = speed;
+                } else if (velocity.y < speed) {
+                    velocity.y = -speed;
+                }
 
-                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//                    System.out.println("There seems to be a rectangle around here somewhere");
+                //Save old position
+                float oldX = playerRect.getX(),
+                        oldY = playerRect.getY(),
+                        tileWidth = colliding.getTileWidth(),
+                        tileHeight = colliding.getTileHeight();
 
-                    Rectangle rectangle = rectangleObject.getRectangle();
-                    if (Intersector.overlaps(rectangle, playerRect)) {
-                        //System.out.println("Collision");
+                boolean collisionX = false, collisionY = false;
+
+                // Move on x
+                playerRect.setX(playerRect.getX() + velocity.x * gameData.getDelta());
+                if (velocity.x < 0) {
+                    // Collision top left
+                    collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / tileHeight))
+                            .getTile().getProperties().containsKey(blockedKey);
+                    if (collisionX == true) {
+                    }
+                    // middle left
+                    if (!collisionX) {
+                        collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight() / 2) / tileHeight))
+                                .getTile().getProperties().containsKey(blockedKey);
+                    }
+                    // bottom left
+                    if (!collisionX) {
+                        collisionX = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() / tileHeight)))
+                                .getTile().getProperties().containsKey(blockedKey);
+                    } else if (velocity.y > 0) {
+                        // top left
+                        collisionY = colliding.getCell((int) (playerRect.getX() / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / playerRect.getHeight()))
+                                .getTile().getProperties().containsKey("blocked");
+                        // top middle 
+                        if (!collisionY) {
+                            collisionY = colliding.getCell((int) ((playerRect.getX() + playerRect.getWidth()) / tileWidth), (int) ((playerRect.getY() + playerRect.getHeight()) / tileHeight))
+                                    .getTile().getProperties().containsKey("blocked");
+                        }
+                        // top right
+                        if (!collisionY) {
+                            collisionY = colliding.getCell((int) ((playerRect.getX() + playerRect.getWidth()) / tileWidth), (int) (playerRect.getY() + playerRect.getHeight() / tileHeight))
+                                    .getTile().getProperties().containsKey("blocked");
+
+                        }
+                    }
+                    //         react to y collision
+                    if (collisionY) {
+                        playerRect.setY(oldY);
+                        velocity.x = 0;
                     }
                 }
+
+//                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+////                    System.out.println("There seems to be a rectangle around here somewhere");
+//                    Rectangle rectangle = rectangleObject.getRectangle();
+//                    if (Intersector.overlaps(rectangle, playerRect)) {
+//                        System.out.println("Collision");
+//                    }
+//                }
             }
         }
     }
