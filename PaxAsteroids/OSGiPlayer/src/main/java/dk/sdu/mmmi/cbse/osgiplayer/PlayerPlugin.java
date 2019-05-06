@@ -40,7 +40,7 @@ public class PlayerPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiCore/src/main/java/dk/sdu/mmmi/cbse/assets/img/player.png";
+        String spriteLocation = "C:/Users/Bruger/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         playerShip.add(new SpritePart(spriteLocation));

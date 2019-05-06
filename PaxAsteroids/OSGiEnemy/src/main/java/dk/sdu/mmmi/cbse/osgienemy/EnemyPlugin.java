@@ -5,9 +5,16 @@
  */
 package dk.sdu.mmmi.cbse.osgienemy;
 
+import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
+import dk.sdu.mmmi.cbse.common.enemy.Enemy;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
+import java.io.File;
 
 /**
  *
@@ -15,14 +22,45 @@ import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
  */
 public class EnemyPlugin implements IGamePluginService {
 
+    private String enemyID;
+
+    public EnemyPlugin() {
+    }
+
     @Override
     public void start(GameData gameData, World world) {
-        System.out.println("Starting Enemy");
+        // Add entities to the world
+        Entity player = createEnemy(gameData, world);
+        enemyID = world.addEntity(player);
+    }
+
+    private Entity createEnemy(GameData gameData, World world) {
+        Entity enemyShip = new Enemy();
+        float speed = 150;
+        float deceleration = 1000;
+        float x = world.getPlayerSpawn()[0];
+        float y = world.getPlayerSpawn()[1];
+//        float radians = 3.1415f / 2;
+        enemyShip.add(new LifePart(3, 69));
+        enemyShip.setRadius(4);
+        enemyShip.add(new MovingPart(speed, deceleration));
+        enemyShip.add(new PositionPart(x, y/*, radians*/));
+        String filename = "/Chicken.png";
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+        System.out.println(EnemyPlugin.class);
+        File file = new File(EnemyPlugin.class.getResource(filename).getFile());
+        String spriteLocation = "C:/Users/Bruger/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
+        System.out.println(new File("").getAbsolutePath() + "/target");
+        System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
+        enemyShip.add(new SpritePart(spriteLocation));
+
+        return enemyShip;
     }
 
     @Override
     public void stop(GameData gameData, World world) {
-        System.out.println("Stopping Enemy");
+        // Remove entities
+        world.removeEntity(enemyID);
     }
     
 }

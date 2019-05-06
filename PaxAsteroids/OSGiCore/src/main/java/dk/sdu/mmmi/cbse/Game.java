@@ -103,7 +103,7 @@ public class Game implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\Bruger\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
 
 //        gameData.setDisplayWidth(Gdx.graphics.getWidth());
 //        gameData.setDisplayHeight(Gdx.graphics.getHeight());
