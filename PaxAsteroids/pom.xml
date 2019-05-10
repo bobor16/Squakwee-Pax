@@ -60,6 +60,8 @@
     <module>OSGiCollision</module>
     <module>OSGiEnemy</module>
     <module>OSGiCommonEnemy</module>
+    <module>OSGiWeapon</module>
+    <module>OSGiCommenWeapon</module>
   </modules>
 
     <build>

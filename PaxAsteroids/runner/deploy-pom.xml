@@ -145,6 +145,26 @@
       <version>1.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>OSGiCommonWeapon</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>bundle</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>OSGiWeapon</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <type>bundle</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>dk.sdu.mmmi.build</groupId>
+      <artifactId>OSGiCommonWeapon</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>

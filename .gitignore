@@ -10,3 +10,6 @@
 /PaxAsteroids/target/
 /PaxAsteroids/OSGiCollision/target/
 /PaxAsteroids/OSGiEnemy/target/
+/PaxAsteroids/OSGiWeapon/target/
+/PaxAsteroids/OSGiCommonWeapon/target/
+/PaxAsteroids/OSGiCommenWeapon/target/

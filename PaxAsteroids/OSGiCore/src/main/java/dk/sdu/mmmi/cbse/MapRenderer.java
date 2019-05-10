@@ -33,13 +33,13 @@ public class MapRenderer implements Screen {
     @Override
     public void show() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Group7\\Squakwee\\OSGiMap\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
 //        map = loader.load("assets\\TileMap.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
         camera = new OrthographicCamera();
-        player = new SpriteRenderer(new Sprite(new Texture("C:\\Users\\borga\\Documents\\NetBeansProjects\\Group7\\Squakwee\\OSGiMap\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\img\\player.png")), (TiledMapTileLayer) map.getLayers().get(0));
+        player = new SpriteRenderer(new Sprite(new Texture("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\img\\player.png")), (TiledMapTileLayer) map.getLayers().get(0));
         player.setPosition(5 * player.getCollisionLayer().getTileWidth(), 52 * player.getCollisionLayer().getTileHeight());
     }
 
