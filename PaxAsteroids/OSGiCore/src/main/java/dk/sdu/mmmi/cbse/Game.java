@@ -89,12 +89,12 @@ public class Game implements ApplicationListener {
     }
 
     private void init() {
-        gameData.setDisplayWidth(800);
-        gameData.setDisplayHeight(600);
+        gameData.setDisplayWidth(1920);
+        gameData.setDisplayHeight(1080);
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Squakwee";
-        cfg.width = 800;
-        cfg.height = 600;
+        cfg.width = 1920;
+        cfg.height = 1080;
         cfg.useGL30 = false;
         cfg.resizable = false;
         new LwjglApplication(this, cfg);
@@ -103,7 +103,7 @@ public class Game implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\Bruger\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
 
 //        gameData.setDisplayWidth(Gdx.graphics.getWidth());
 //        gameData.setDisplayHeight(Gdx.graphics.getHeight());

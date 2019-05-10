@@ -7,14 +7,11 @@ package dk.sdu.mmmi.cbse.osgiweapon;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.DOWN;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.LEFT;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.RIGHT;
-import static dk.sdu.mmmi.cbse.common.data.GameKeys.UP;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.weapon.Weapon;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
+import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 
 /**
@@ -22,22 +19,22 @@ import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
  * @author Martin Sorensen
  */
 public class WeaponProcessor implements IEntityProcessingService{
-
+    
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity entity : world.getEntities(Weapon.class)) {
+        for (Entity weapon : world.getEntities(Weapon.class)) {
+             for (Entity player : world.getEntities(Player.class)){
+            PositionPart positionPart = player.getPart(PositionPart.class);
+            float x = positionPart.getX();
+            float y = positionPart.getY();
+            weapon.getPart(PositionPart.class);  
+            weapon.add(new PositionPart(x, y/*, radians*/));
+            MovingPart movingPart = weapon.getPart(MovingPart.class);
 
-            PositionPart positionPart = entity.getPart(PositionPart.class);
-            MovingPart movingPart = entity.getPart(MovingPart.class);
+            movingPart.process(gameData, weapon);
+            positionPart.process(gameData, weapon);
 
-            movingPart.setLeft(gameData.getKeys().isDown(LEFT));
-            movingPart.setRight(gameData.getKeys().isDown(RIGHT));
-            movingPart.setUp(gameData.getKeys().isDown(UP));
-            movingPart.setDown(gameData.getKeys().isDown(DOWN));
-
-            movingPart.process(gameData, entity);
-            positionPart.process(gameData, entity);
-
+        }
         }
     }
     

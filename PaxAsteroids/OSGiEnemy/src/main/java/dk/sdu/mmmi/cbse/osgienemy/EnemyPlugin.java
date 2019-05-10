@@ -35,26 +35,26 @@ public class EnemyPlugin implements IGamePluginService {
     }
 
     private Entity createEnemy(GameData gameData, World world) {
-        Entity enemyShip = new Enemy();
+        Entity enemy = new Enemy();
         float speed = 150;
         float deceleration = 1000;
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
 //        float radians = 3.1415f / 2;
-        enemyShip.add(new LifePart(3, 69));
-        enemyShip.setRadius(4);
-        enemyShip.add(new MovingPart(speed, deceleration));
-        enemyShip.add(new PositionPart(x, y/*, radians*/));
+        enemy.add(new LifePart(3, 69));
+        enemy.setRadius(4);
+        enemy.add(new MovingPart(speed, deceleration));
+        enemy.add(new PositionPart(x, y/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(EnemyPlugin.class);
         File file = new File(EnemyPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/marti/OneDrive - Syddansk Universitet/Netbeans projekter/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
+        String spriteLocation = "C:/Users/Bruger/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
-        enemyShip.add(new SpritePart(spriteLocation));
+        enemy.add(new SpritePart(spriteLocation));
 
-        return enemyShip;
+        return enemy;
     }
 
     @Override
