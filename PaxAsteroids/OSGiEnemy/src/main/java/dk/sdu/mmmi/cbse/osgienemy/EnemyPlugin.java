@@ -44,12 +44,12 @@ public class EnemyPlugin implements IGamePluginService {
         enemy.add(new LifePart(3, 69));
         enemy.setRadius(4);
         enemy.add(new MovingPart(speed, deceleration));
-        enemy.add(new PositionPart(x, y/*, radians*/));
+        enemy.add(new PositionPart(32, 45/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(EnemyPlugin.class);
         File file = new File(EnemyPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/Bruger/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
+        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         enemy.add(new SpritePart(spriteLocation));

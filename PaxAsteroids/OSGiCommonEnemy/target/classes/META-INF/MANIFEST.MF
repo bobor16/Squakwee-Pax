@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.common
-Built-By: Bruger
+Built-By: borga
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1557488793841
+Bnd-LastModified: 1557747815428
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy
 Tool: Bnd-0.0.255
