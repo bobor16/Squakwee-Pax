@@ -40,6 +40,8 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -71,6 +73,10 @@ public class Game implements ApplicationListener {
     private String blockedFrame = "frame";
     private String playerSpawn = "playerSpawn";
     private TiledMapTileSet s;
+    
+    //Mouse position
+    private final Vector2 mouseInWorld2D = new Vector2();
+    private final Vector3 mouseInWorld3D = new Vector3();
 
     //Spawn
     private MapLayer spawnLayer;
@@ -103,7 +109,7 @@ public class Game implements ApplicationListener {
     @Override
     public void create() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\Bruger\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:/Users/rasmu/OneDrive/SDU/4. Semester/Project/Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
 
 //        gameData.setDisplayWidth(Gdx.graphics.getWidth());
 //        gameData.setDisplayHeight(Gdx.graphics.getHeight());
@@ -151,6 +157,16 @@ public class Game implements ApplicationListener {
         cam.update();
         update();
         draw();
+        
+        mouseInWorld3D.x = Gdx.input.getX();
+        mouseInWorld3D.y = Gdx.input.getY();
+        mouseInWorld3D.z = 0;
+        
+        cam.unproject(mouseInWorld3D);
+        mouseInWorld2D.x = mouseInWorld3D.x;
+        mouseInWorld2D.y = mouseInWorld3D.y;
+        
+        System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
 
     }
 

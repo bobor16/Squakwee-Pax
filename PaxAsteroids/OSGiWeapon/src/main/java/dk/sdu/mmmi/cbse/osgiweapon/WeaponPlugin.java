@@ -50,7 +50,7 @@ public class WeaponPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(WeaponPlugin.class);
         File file = new File(WeaponPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/Bruger/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiWeapon/src/main/resources/weapon.png";
+        String spriteLocation = "C:/Users/rasmu/OneDrive/SDU/4. Semester/Project/Squakwee-Pax/PaxAsteroids/OSGiWeapon/src/main/resources/weapon.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         weapon.add(new SpritePart(spriteLocation));
