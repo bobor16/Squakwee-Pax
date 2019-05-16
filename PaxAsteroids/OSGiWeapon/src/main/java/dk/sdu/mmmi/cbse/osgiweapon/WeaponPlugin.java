@@ -37,7 +37,7 @@ public class WeaponPlugin implements IGamePluginService {
     }
 
     private Entity createWeapon(GameData gameData, World world) {
-        
+
         Entity weapon = new Weapon();
         float speed = 150;
         //float deceleration = 1000;
@@ -57,13 +57,12 @@ public class WeaponPlugin implements IGamePluginService {
 
         return weapon;
     }
-    
+
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
         System.out.println("stopping weapon");
         world.removeEntity(weaponID);
     }
-    
-}
 
+}

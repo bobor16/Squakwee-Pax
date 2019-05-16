@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World {
 
     private final Map<String, Entity> entityMap = new ConcurrentHashMap<>();
-    private float[] playerSpawn = new float[2];
+    private float[] playerSpawn = {4, 56};
 
     public float[] getPlayerSpawn() {
         return playerSpawn;

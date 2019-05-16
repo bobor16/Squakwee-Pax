@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 
 //dk.sdu.mmmi
 import dk.sdu.mmmi.cbse.common.data.Entity;
@@ -39,23 +39,26 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
+import static com.badlogic.gdx.math.MathUtils.clamp;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
 
 // Player
-import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
-
 public class Game implements ApplicationListener {
 
     private BundleContext bundleContext;
 
     private static OrthographicCamera cam;
+    private Viewport viewPort;
     private ShapeRenderer sr;
     private SpriteBatch batch;
     private Texture texture;
+
 //    private Sprite sprite, spriteMap;
     private final GameData gameData = new GameData();
     private static World world = new World();
@@ -66,17 +69,19 @@ public class Game implements ApplicationListener {
     private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
+    private TiledMapRenderer tiledMapRenderer;
 
     //Collision
     private MapLayer collisionLayer;
     private String blockedKey = "blocked";
-    private String blockedFrame = "frame";
     private String playerSpawn = "playerSpawn";
+    private String blockedLayer = "blockedLayer";
     private TiledMapTileSet s;
     
     //Mouse position
     private final Vector2 mouseInWorld2D = new Vector2();
     private final Vector3 mouseInWorld3D = new Vector3();
+    private Sprite mapSprite;
 
     //Spawn
     private MapLayer spawnLayer;
@@ -95,12 +100,12 @@ public class Game implements ApplicationListener {
     }
 
     private void init() {
-        gameData.setDisplayWidth(1920);
-        gameData.setDisplayHeight(1080);
+//        gameData.setDisplayWidth(1920);
+//        gameData.setDisplayHeight(1080);
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Squakwee";
-        cfg.width = 1920;
-        cfg.height = 1080;
+        cfg.width = 1280;
+        cfg.height = 720;
         cfg.useGL30 = false;
         cfg.resizable = false;
         new LwjglApplication(this, cfg);
@@ -108,41 +113,38 @@ public class Game implements ApplicationListener {
 
     @Override
     public void create() {
+        gameData.setDisplayWidth(Gdx.graphics.getWidth());
+        gameData.setDisplayHeight(Gdx.graphics.getHeight());
+        float w = gameData.getDisplayWidth();
+        float h = gameData.getDisplayHeight();
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:/Users/rasmu/OneDrive/SDU/4. Semester/Project/Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
-
-//        gameData.setDisplayWidth(Gdx.graphics.getWidth());
-//        gameData.setDisplayHeight(Gdx.graphics.getHeight());
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+        cam = new OrthographicCamera(w, h);
+        cam.setToOrtho(false, w, h);
+        cam.translate(w, h);
         //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
         assetManager = new AssetManager();
         batch = new SpriteBatch();
-//        renderer = new OrthogonalTiledMapRenderer(map, gameData.getDisplayWidth() / (map.getProperties().get("width", Integer.class) * 8f));
-        renderer = new OrthogonalTiledMapRenderer(map);
 
-        cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
-//        cam.translate(cam.viewportWidth / 2, cam.viewportHeight / 2);
-        cam.update();
-
-//        sr = new ShapeRenderer();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
-        spawnLayer = map.getLayers().get("spawnPoint");
-        MapObjects objects = spawnLayer.getObjects();
-
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//            System.out.println("ther is a spawnpoint");
-            if (rectangleObject.getProperties().containsKey(playerSpawn)) {
-                float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
-                world.setPlayerSpawn(playerSpawn);
-                System.out.println("Player spawn");
-            }
-        }
     }
 
+//    public void spawnPlayer() {
+//        spawnLayer = map.getLayers().get(playerSpawn);
+//        MapObjects objects = spawnLayer.getObjects();
+//
+//        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+//            if (rectangleObject.getProperties().containsKey(playerSpawn)) {
+//                float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
+//                world.setPlayerSpawn(playerSpawn);
+//                System.out.println("Player spawn");
+//            }
+//        }
+//    }
     @Override
     public void dispose() {
-
     }
 
     @Override
@@ -152,9 +154,8 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         gameData.setDelta(Gdx.graphics.getDeltaTime());
         gameData.getKeys().update();
-        renderer.setView(cam);
-        renderer.render();
-        cam.update();
+        tiledMapRenderer.setView(cam);
+        tiledMapRenderer.render();
         update();
         draw();
         
@@ -168,6 +169,7 @@ public class Game implements ApplicationListener {
         
         System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
 
+        sr = new ShapeRenderer();
     }
 
     @Override
@@ -185,36 +187,44 @@ public class Game implements ApplicationListener {
         // Post Update
         for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessorList) {
             postEntityProcessorService.process(gameData, world);
+
         }
 
         for (Entity entity : world.getEntities()) {
             if (this.sprites.containsKey(entity.getID())) {
                 PositionPart position = entity.getPart(PositionPart.class);
                 Sprite sprite = this.sprites.get(entity.getID());
-                MovingPart moving = entity.getPart(MovingPart.class);
                 sprite.setPosition(position.getX(), position.getY());
 
-                Rectangle playerRect = rectPool.obtain();
-                playerRect.set(position.getX(),
-                        position.getY(),
-                        sprite.getWidth(),
-                        sprite.getHeight());
-
-                collisionLayer = map.getLayers().get(blockedKey);
+                Rectangle entityRect = rectPool.obtain();
+                entityRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
+                collisionLayer = map.getLayers().get(blockedLayer);
                 MapObjects objects = collisionLayer.getObjects();
+                boolean colliding = false;
 
                 for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//                    System.out.println("There seems to be a rectangle around here somewhere");
-                    Rectangle rectangle = rectangleObject.getRectangle();
-                    if (Intersector.overlaps(rectangle, playerRect)) {
-                        position.setX(position.getOldX());
-                        position.setY(position.getOldY());
-                    } else {
-                        position.setOldX(position.getX());
-                        position.setOldY(position.getY());
+                    if (rectangleObject.getProperties().containsKey(blockedKey)) {
+                        Rectangle rectangle = rectangleObject.getRectangle();
+                        if (Intersector.overlaps(rectangle, entityRect)) {
+                            colliding = true;
+                            break;
+                        }
                     }
-//                    cam.position.set(playerRect.getX(), playerRect.getY(), 0);
-//                    cam.update();
+                }
+                if (colliding) {
+                    position.setX(position.getOldX());
+                    position.setY(position.getOldY());
+//                    System.out.println("colliding");
+                } else {
+                    position.setOldX(position.getX());
+                    position.setOldY(position.getY());
+//                    System.out.println("!colliding");
+                }
+//                cam.position.set(entityRect.getX(), entityRect.getY(), 0);
+                if (entity.getPart(CameraPart.class) != null) {
+                    cam.position.set(sprite.getX(), sprite.getY(), 0);
+                    cam.update();
+                    batch.setProjectionMatrix(cam.combined);
                 }
             }
         }
@@ -227,12 +237,10 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
 
             } else {
-                SpritePart spritePart = entity.getPart(SpritePart.class
-                );
+                SpritePart spritePart = entity.getPart(SpritePart.class);
                 String location = spritePart.getSpriteLocation();
 
-                this.assetManager.load(location, Texture.class
-                );
+                this.assetManager.load(location, Texture.class);
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
                 while (!this.assetManager.update()) {
@@ -243,22 +251,19 @@ public class Game implements ApplicationListener {
                     System.out.println(assetName);
 
                 }
-                if (this.assetManager.isLoaded(location, Texture.class
-                )) {
+                if (this.assetManager.isLoaded(location, Texture.class)) {
                     System.out.println("Sprite Loaded");
                 } else {
                     System.out.println("Sprite Not Loaded");
 
                 }
-                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class
-                ));
-                PositionPart position = entity.getPart(PositionPart.class
-                );
+
+                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class));
+                PositionPart position = entity.getPart(PositionPart.class);
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);
                 sprite.setSize(25, 30);
-
             }
         }
         batch.end();
