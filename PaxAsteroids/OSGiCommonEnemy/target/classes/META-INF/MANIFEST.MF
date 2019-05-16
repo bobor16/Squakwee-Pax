@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.common
 Built-By: rasmu
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1557739034700
+Bnd-LastModified: 1558006306295
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy
 Tool: Bnd-0.0.255

@@ -40,11 +40,11 @@ public class WeaponPlugin implements IGamePluginService {
         
         Entity weapon = new Weapon();
         float speed = 150;
-        float deceleration = 1000;
+        //float deceleration = 1000;
         
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
-        weapon.add(new MovingPart(speed, deceleration));
+        weapon.add(new MovingPart(speed));
             
         String filename = "/weapon.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();

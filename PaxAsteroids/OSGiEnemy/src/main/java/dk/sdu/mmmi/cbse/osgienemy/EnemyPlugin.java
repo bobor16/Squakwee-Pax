@@ -43,7 +43,7 @@ public class EnemyPlugin implements IGamePluginService {
 //        float radians = 3.1415f / 2;
         enemy.add(new LifePart(3, 69));
         enemy.setRadius(4);
-        enemy.add(new MovingPart(speed, deceleration));
+        enemy.add(new MovingPart(speed));
         enemy.add(new PositionPart(x, y/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();

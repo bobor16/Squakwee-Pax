@@ -16,12 +16,12 @@ import static java.lang.Math.sqrt;
 public class MovingPart implements EntityPart {
 
     private double dx, dy;
-    private float speed, deceleration;
+    private float speed;
     private boolean left, right, up, down, moving;
 
-    public MovingPart(float Speed, float Deceleration) {
+    public MovingPart(float Speed) {
         this.speed = Speed;
-        this.deceleration = Deceleration;
+        
     }
 
     public double getDx() {
@@ -80,7 +80,7 @@ public class MovingPart implements EntityPart {
 //        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
-        // turning
+        
         if (left) {
             dy = 0;
             dx = -speed;
@@ -134,9 +134,11 @@ public class MovingPart implements EntityPart {
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
-        if (vec > 0) {
-            dx -= (dx / vec) * deceleration * dt;
-            dy -= (dy / vec) * deceleration * dt;
+        if (!isDown() && !isUp()){
+            dy = 0;
+        }
+        if (!isLeft() && !isRight()) {
+            dx = 0;            
         }
         if (vec > speed) {
             dx = (dx / vec) * speed;
