@@ -23,7 +23,11 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bc) throws Exception {
+<<<<<<< HEAD
 
+=======
+        System.out.println("Map stop");
+>>>>>>> master
     }
 
 }
