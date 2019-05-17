@@ -21,6 +21,7 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void start(GameData gameData, World world) {
         // Add entities to the world
+        System.out.println("starting player");
         Entity player = createPlayer(gameData, world);
         playerID = world.addEntity(player);
     }
@@ -31,11 +32,11 @@ public class PlayerPlugin implements IGamePluginService {
         float deceleration = 1000;
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
-//        float radians = 3.1415f / 2;
+        float radians = 3.1415f / 2;
         player.add(new LifePart(3, 69));
         player.setRadius(4);
-        player.add(new MovingPart(speed, deceleration));
-        player.add(new PositionPart(x, y/*, radians*/));
+        player.add(new MovingPart(speed, deceleration, radians));
+        player.add(new PositionPart(x, y, radians));
         String filename = "/player.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
@@ -51,6 +52,7 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
+        System.out.println("stopping player");
         world.removeEntity(playerID);
     }
 

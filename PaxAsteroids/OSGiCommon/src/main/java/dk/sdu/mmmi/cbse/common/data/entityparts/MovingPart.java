@@ -7,6 +7,7 @@ package dk.sdu.mmmi.cbse.common.data.entityparts;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
+import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import static java.lang.Math.sqrt;
 
 /**
@@ -16,14 +17,23 @@ import static java.lang.Math.sqrt;
 public class MovingPart implements EntityPart {
 
     private double dx, dy;
-    private float speed, deceleration;
-    private boolean left, right, up, down, moving;
+    private float speed, deceleration, radians;
+    private boolean left, right, up, down, shoot;
 
-    public MovingPart(float Speed, float Deceleration) {
-        this.speed = Speed;
-        this.deceleration = Deceleration;
+    public boolean isShoot() {
+        return shoot;
     }
 
+    public void setShoot(boolean shoot) {
+        this.shoot = shoot;
+    }
+
+    public MovingPart(float Speed, float Deceleration, float Radians) {
+        this.speed = Speed;
+        this.deceleration = Deceleration;
+        this.radians = Radians;
+    }
+    
     public double getDx() {
         return dx;
     }
@@ -77,9 +87,14 @@ public class MovingPart implements EntityPart {
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-//        float radians = positionPart.getRadians();
+        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
-
+        
+        if (shoot) {
+            dy = 0;
+            dx = -speed;
+        }
+        
         // turning
         if (left) {
             dy = 0;
@@ -161,7 +176,7 @@ public class MovingPart implements EntityPart {
         positionPart.setX(x);
         positionPart.setY(y);
 
-//        positionPart.setRadians(radians);
+        positionPart.setRadians(radians);
     }
 
 }

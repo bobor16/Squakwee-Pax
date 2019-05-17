@@ -10,9 +10,7 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
-import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
-import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.weapon.Weapon;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import java.io.File;
@@ -41,10 +39,11 @@ public class WeaponPlugin implements IGamePluginService {
         Entity weapon = new Weapon();
         float speed = 150;
         float deceleration = 1000;
+        float radians = 0;
         
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
-        weapon.add(new MovingPart(speed, deceleration));
+        weapon.add(new MovingPart(speed, deceleration, radians));
             
         String filename = "/weapon.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();

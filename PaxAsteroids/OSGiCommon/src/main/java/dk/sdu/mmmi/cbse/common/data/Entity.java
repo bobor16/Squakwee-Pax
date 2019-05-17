@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Entity implements Serializable {
 
     private final UUID ID = UUID.randomUUID();
-
+    private float x, y, width, height, previousX, previousY;
     private float[] shapeX = new float[4];
     private float[] shapeY = new float[4];
     private float radius;
@@ -19,6 +19,56 @@ public class Entity implements Serializable {
         parts = new ConcurrentHashMap<>();
     }
 
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getPreviousX() {
+        return previousX;
+    }
+
+    public void setPreviousX(float previousX) {
+        this.previousX = previousX;
+    }
+
+    public float getPreviousY() {
+        return previousY;
+    }
+
+    public void setPreviousY(float previousY) {
+        this.previousY = previousY;
+    }
+
+    
+    
     public void add(EntityPart part) {
         parts.put(part.getClass(), part);
     }

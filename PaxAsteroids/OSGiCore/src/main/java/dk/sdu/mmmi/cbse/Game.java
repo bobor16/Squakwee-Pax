@@ -241,8 +241,10 @@ public class Game implements ApplicationListener {
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);
-                sprite.setSize(25, 30);
+                sprite.setSize(100, 120);
 
+                
+                
             }
         }
         batch.end();
