@@ -26,7 +26,7 @@ public class PlayerProcessor implements IEntityProcessingService {
             movingPart.setRight(gameData.getKeys().isDown(RIGHT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
-
+            
             movingPart.process(gameData, entity);
             positionPart.process(gameData, entity);
         }

@@ -13,12 +13,16 @@ import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
+import static dk.sdu.mmmi.cbse.common.data.GameKeys.SPACE;
+import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
 
 /**
  *
  * @author Martin Sorensen
  */
 public class WeaponProcessor implements IEntityProcessingService{
+    
+    BulletSPI bulletService;
     
     @Override
     public void process(GameData gameData, World world) {
@@ -31,7 +35,11 @@ public class WeaponProcessor implements IEntityProcessingService{
             
             weapon.add(new PositionPart(x, y, r));
             MovingPart movingPart = weapon.getPart(MovingPart.class);
-
+            
+            if (gameData.getKeys().isDown(SPACE)){
+                bulletService.createBullet(weapon, gameData);
+            }
+            
             movingPart.process(gameData, weapon);
             positionPart.process(gameData, weapon);
 
@@ -39,4 +47,11 @@ public class WeaponProcessor implements IEntityProcessingService{
         }
     }
     
+    public void setBulletService(BulletSPI bulletService){
+        this.bulletService = bulletService;
+    }
+    
+    public void removeBulletService(){
+        this.bulletService = null;
+    }
 }

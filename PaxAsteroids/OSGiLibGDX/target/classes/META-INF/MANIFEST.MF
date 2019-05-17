@@ -3,7 +3,7 @@ Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.build.OSGiLibGDX
 Built-By: Bruger
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1558083542141
+Bnd-LastModified: 1558093052756
 Embed-Dependency: *
 Import-Package: com.badlogic.gdx,com.badlogic.gdx.assets,com.badlogic.
  gdx.assets.loaders,com.badlogic.gdx.assets.loaders.resolvers,com.badl

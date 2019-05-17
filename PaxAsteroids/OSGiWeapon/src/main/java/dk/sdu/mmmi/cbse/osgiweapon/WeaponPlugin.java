@@ -10,10 +10,13 @@ import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
 import dk.sdu.mmmi.cbse.common.weapon.Weapon;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import java.io.File;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *
@@ -22,6 +25,11 @@ import java.io.File;
 public class WeaponPlugin implements IGamePluginService {
 
     private String weaponID;
+    private BundleContext bundleContext;
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
     public WeaponPlugin() {
     }
@@ -32,19 +40,22 @@ public class WeaponPlugin implements IGamePluginService {
         System.out.println("starting weapon");
         Entity weapon = createWeapon(gameData, world);
         weaponID = world.addEntity(weapon);
+        this.bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+
     }
 
     private Entity createWeapon(GameData gameData, World world) {
-        
+
         Entity weapon = new Weapon();
         float speed = 150;
         float deceleration = 1000;
         float radians = 0;
-        
+
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
         weapon.add(new MovingPart(speed, deceleration, radians));
-            
+        weapon.add(new PositionPart(speed, speed, radians));
+
         String filename = "/weapon.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(WeaponPlugin.class);
@@ -56,13 +67,12 @@ public class WeaponPlugin implements IGamePluginService {
 
         return weapon;
     }
-    
+
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
         System.out.println("stopping weapon");
         world.removeEntity(weaponID);
     }
-    
-}
 
+}
