@@ -4,12 +4,7 @@ Bundle-SymbolicName: dk.sdu.mmmi.common
 <<<<<<< HEAD
 Built-By: rasmu
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1558006306295
-=======
-Built-By: borga
-Bundle-ManifestVersion: 2
-Bnd-LastModified: 1557747815428
->>>>>>> Camera
+Bnd-LastModified: 1558082721568
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy
 Tool: Bnd-0.0.255

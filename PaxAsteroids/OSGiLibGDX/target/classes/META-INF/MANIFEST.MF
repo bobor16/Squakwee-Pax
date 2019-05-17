@@ -5,12 +5,16 @@ Bundle-SymbolicName: dk.sdu.mmmi.build.OSGiLibGDX
 <<<<<<< HEAD
 Built-By: rasmu
 Bundle-ManifestVersion: 2
+<<<<<<< HEAD
 Bnd-LastModified: 1558006283782
 =======
 Built-By: borga
 Bundle-ManifestVersion: 2
 Bnd-LastModified: 1557747801104
 >>>>>>> Camera
+=======
+Bnd-LastModified: 1558082699104
+>>>>>>> BulletCombTest
 Embed-Dependency: *
 Import-Package: com.badlogic.gdx,com.badlogic.gdx.assets,com.badlogic.
  gdx.assets.loaders,com.badlogic.gdx.assets.loaders.resolvers,com.badl

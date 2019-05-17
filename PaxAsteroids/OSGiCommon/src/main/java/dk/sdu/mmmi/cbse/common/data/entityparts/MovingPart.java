@@ -7,6 +7,7 @@ package dk.sdu.mmmi.cbse.common.data.entityparts;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
+import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import static java.lang.Math.sqrt;
 
 /**
@@ -19,11 +20,20 @@ public class MovingPart implements EntityPart {
     private float speed;
     private boolean left, right, up, down, moving;
 
-    public MovingPart(float Speed) {
-        this.speed = Speed;
-        
+    public boolean isShoot() {
+        return shoot;
     }
 
+    public void setShoot(boolean shoot) {
+        this.shoot = shoot;
+    }
+
+    public MovingPart(float Speed, float Deceleration, float Radians) {
+        this.speed = Speed;
+        this.deceleration = Deceleration;
+        this.radians = Radians;
+    }
+    
     public double getDx() {
         return dx;
     }
@@ -77,10 +87,15 @@ public class MovingPart implements EntityPart {
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-//        float radians = positionPart.getRadians();
+        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
-
         
+        if (shoot) {
+            dy = 0;
+            dx = -speed;
+        }
+        
+        // turning
         if (left) {
             dy = 0;
             dx = -speed;
@@ -163,7 +178,7 @@ public class MovingPart implements EntityPart {
         positionPart.setX(x);
         positionPart.setY(y);
 
-//        positionPart.setRadians(radians);
+        positionPart.setRadians(radians);
     }
 
 }

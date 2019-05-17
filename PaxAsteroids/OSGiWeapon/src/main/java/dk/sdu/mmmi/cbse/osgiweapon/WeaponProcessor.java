@@ -27,8 +27,9 @@ public class WeaponProcessor implements IEntityProcessingService{
             PositionPart positionPart = player.getPart(PositionPart.class);
             float x = positionPart.getX();
             float y = positionPart.getY();
-            weapon.getPart(PositionPart.class);  
-            weapon.add(new PositionPart(x, y/*, radians*/));
+            float r = positionPart.getRadians();
+            
+            weapon.add(new PositionPart(x, y, r));
             MovingPart movingPart = weapon.getPart(MovingPart.class);
 
             movingPart.process(gameData, weapon);
