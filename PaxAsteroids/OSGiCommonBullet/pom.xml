@@ -22,8 +22,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>!dk.sdu.mmmi.internal.*,dk.sdu.mmmi.*;version="1.0-SNAPSHOT",dk.sdu.mmmi.cbse.common.bullet</Export-Package>
-                        <Private-Package>dk.sdu.mmmi.cbse.common.bullet.*</Private-Package>
+                        <Export-Package>!dk.sdu.mmmi.internal.*,dk.sdu.mmmi.*;version="1.0-SNAPSHOT",dk.sdu.mmmi.cbse.common.bullet,dk.sdu.mmmi.osgicommonbullet</Export-Package>
+                        <Private-Package>dk.sdu.mmmi.osgicommonbullet.*</Private-Package>
                     </instructions>
                 </configuration>
             </plugin>
