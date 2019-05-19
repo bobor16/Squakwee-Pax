@@ -37,7 +37,7 @@ public class PlayerPlugin implements IGamePluginService {
         player.add(new LifePart(3, 69));
         player.setRadius(4);
         player.add(new MovingPart(speed, deceleration));
-        player.add(new PositionPart(18, 38/*, radians*/));
+        player.add(new PositionPart(317, 312/*, radians*/));
         String filename = "/player.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);

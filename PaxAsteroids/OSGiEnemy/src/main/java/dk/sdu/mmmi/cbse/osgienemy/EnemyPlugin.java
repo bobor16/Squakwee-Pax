@@ -41,10 +41,10 @@ public class EnemyPlugin implements IGamePluginService {
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
 //        float radians = 3.1415f / 2;
-        enemy.add(new LifePart(3, 69));
+        enemy.add(new LifePart(40, 13));
         enemy.setRadius(4);
         enemy.add(new MovingPart(speed, deceleration));
-        enemy.add(new PositionPart(32, 45/*, radians*/));
+        enemy.add(new PositionPart(295, 140/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(EnemyPlugin.class);
@@ -62,5 +62,5 @@ public class EnemyPlugin implements IGamePluginService {
         // Remove entities
         world.removeEntity(enemyID);
     }
-    
+
 }

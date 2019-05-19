@@ -32,31 +32,38 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
-import static com.badlogic.gdx.math.MathUtils.clamp;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
 
-// Player
 public class Game implements ApplicationListener {
 
     private BundleContext bundleContext;
 
+    //Camera
     private static OrthographicCamera cam;
     private Viewport viewPort;
     private ShapeRenderer sr;
     private SpriteBatch batch;
     private Texture texture;
+    private int levelWidth = 0;
+    private int levelHeight = 0;
 
-//    private Sprite sprite, spriteMap;
+    //private Sprite sprite, spriteMap;
     private final GameData gameData = new GameData();
     private static World world = new World();
     private static final List<IEntityProcessingService> entityProcessorList = new CopyOnWriteArrayList<>();
@@ -64,21 +71,25 @@ public class Game implements ApplicationListener {
     private static List<IPostEntityProcessingService> postEntityProcessorList = new CopyOnWriteArrayList<>();
     private AssetManager assetManager;
     private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
-    private TiledMap map;
+    private TiledMap map, cave;
     private OrthogonalTiledMapRenderer renderer;
     private TiledMapRenderer tiledMapRenderer;
 
     //Collision
-    private MapLayer collisionLayer;
+    private MapLayer objectLayer, doorLayer;
     private String blockedKey = "blocked";
     private String playerSpawn = "playerSpawn";
-    private String blockedLayer = "blockedLayer";
+    private String objectKey = "objectLayer";
     private TiledMapTileSet s;
     private Sprite mapSprite;
 
     //Spawn
     private MapLayer spawnLayer;
 
+    //Background music
+    private Music music_level1;
+
+    //Rectangles
     private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 
         @Override
@@ -93,12 +104,10 @@ public class Game implements ApplicationListener {
     }
 
     private void init() {
-//        gameData.setDisplayWidth(1920);
-//        gameData.setDisplayHeight(1080);
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "Squakwee";
-        cfg.width = 1280;
-        cfg.height = 720;
+        cfg.width = 800;
+        cfg.height = 400;
         cfg.useGL30 = false;
         cfg.resizable = false;
         new LwjglApplication(this, cfg);
@@ -108,11 +117,18 @@ public class Game implements ApplicationListener {
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
-        float w = gameData.getDisplayWidth();
-        float h = gameData.getDisplayHeight();
+
+        float w = gameData.getDisplayWidth() / 2;
+        float h = gameData.getDisplayHeight() / 2;
+
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
+//        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("2");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+        MapProperties props = map.getProperties();
+        levelWidth = props.get("width", Integer.class);
+        levelHeight = props.get("height", Integer.class);
+
         cam = new OrthographicCamera(w, h);
         cam.setToOrtho(false, w, h);
         cam.translate(w, h);
@@ -120,12 +136,17 @@ public class Game implements ApplicationListener {
         assetManager = new AssetManager();
         batch = new SpriteBatch();
 
+        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
+        music_level1.setLooping(true);
+        music_level1.play();
+
+//        changeMap();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
     }
 
 //    public void spawnPlayer() {
-//        spawnLayer = map.getLayers().get(playerSpawn);
+//        spawnLayer = map.getLayers().get("items");
 //        MapObjects objects = spawnLayer.getObjects();
 //
 //        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
@@ -138,6 +159,8 @@ public class Game implements ApplicationListener {
 //    }
     @Override
     public void dispose() {
+        map.dispose();
+        music_level1.dispose();
     }
 
     @Override
@@ -149,6 +172,7 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
+
         update();
         draw();
 
@@ -157,6 +181,16 @@ public class Game implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
+
+    }
+
+    public void changeMap() {
+//        Gdx.app.postRunnable(() -> {
+        cave = new TmxMapLoader().load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        renderer.getMap().dispose();
+        renderer.setMap(cave);
+        System.out.println("Hello from inside the cave");
+//        });
     }
 
     private void update() {
@@ -181,8 +215,29 @@ public class Game implements ApplicationListener {
 
                 Rectangle entityRect = rectPool.obtain();
                 entityRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
-                collisionLayer = map.getLayers().get(blockedLayer);
-                MapObjects objects = collisionLayer.getObjects();
+                objectLayer = map.getLayers().get(objectKey);
+                MapObjects objects = objectLayer.getObjects();
+
+                doorLayer = map.getLayers().get("doorLayer");
+                MapObjects doorObject = objectLayer.getObjects();
+                boolean enterCave = false;
+                for (RectangleMapObject rectangleObject : doorObject.getByType(RectangleMapObject.class)) {
+                    if (rectangleObject.getProperties().containsKey("door")) {
+                        Rectangle rect = rectangleObject.getRectangle();
+                        if (Intersector.overlaps(rect, entityRect)) {
+                            enterCave = true;
+                            break;
+                        }
+                    }
+                }
+                if (enterCave) {
+                    int j = 1;
+                    for (int i = 0; i <= j; i++) {
+                        if (i == 1) {
+                            System.out.println("The door is locked! ");
+                        }
+                    }
+                }
                 boolean colliding = false;
 
                 for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
@@ -201,16 +256,43 @@ public class Game implements ApplicationListener {
                 } else {
                     position.setOldX(position.getX());
                     position.setOldY(position.getY());
+//                    System.out.println("x: " + position.getX() + " y: " + position.getY());
 //                    System.out.println("!colliding");
                 }
-//                cam.position.set(entityRect.getX(), entityRect.getY(), 0);
                 if (entity.getPart(CameraPart.class) != null) {
+
                     cam.position.set(sprite.getX(), sprite.getY(), 0);
-                    cam.update();
+                    float startX = cam.viewportWidth / 2;
+                    float startY = cam.viewportHeight / 2;
+                    boundary(cam, startX, startY, levelWidth * 16 - startX * 2, levelHeight * 16 - startY * 2);
+                    tiledMapRenderer.setView(cam);
                     batch.setProjectionMatrix(cam.combined);
+                    sr.setProjectionMatrix(cam.combined);
+                    cam.update();
+
                 }
             }
         }
+    }
+
+    public void boundary(OrthographicCamera camera, float startX, float startY, float width, float height) {
+        Vector3 position = camera.position;
+
+        if (position.x < startX) {
+            position.x = startX;
+        }
+        if (position.y < startY) {
+            position.y = startY;
+        }
+        if (position.x > startX + width) {
+            position.x = startX + width;
+        }
+        if (position.y > startY + height) {
+            position.y = startY + height;
+        }
+        camera.position.set(position);
+        camera.update();
+
     }
 
     private void draw() {
@@ -246,7 +328,7 @@ public class Game implements ApplicationListener {
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);
-                sprite.setSize(25, 30);
+                sprite.setSize(15, 20);
             }
         }
         batch.end();
