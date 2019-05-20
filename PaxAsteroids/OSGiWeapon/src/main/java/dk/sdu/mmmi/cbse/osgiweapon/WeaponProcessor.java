@@ -20,38 +20,43 @@ import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
  *
  * @author Martin Sorensen
  */
-public class WeaponProcessor implements IEntityProcessingService{
-    
-    BulletSPI bulletService;
-    
+public class WeaponProcessor implements IEntityProcessingService {
+
+    private static BulletSPI bulletService;
+
     @Override
     public void process(GameData gameData, World world) {
         for (Entity weapon : world.getEntities(Weapon.class)) {
-             for (Entity player : world.getEntities(Player.class)){
-            PositionPart positionPart = player.getPart(PositionPart.class);
-            float x = positionPart.getX();
-            float y = positionPart.getY();
-            float r = positionPart.getRadians();
-            
-            weapon.add(new PositionPart(x, y, r));
-            MovingPart movingPart = weapon.getPart(MovingPart.class);
-            
-            if (gameData.getKeys().isDown(SPACE)){
-                bulletService.createBullet(weapon, gameData);
-            }
-            
-            movingPart.process(gameData, weapon);
-            positionPart.process(gameData, weapon);
+            for (Entity player : world.getEntities(Player.class)) {
+                PositionPart positionPart = player.getPart(PositionPart.class);
+                float x = positionPart.getX();
+                float y = positionPart.getY();
+                float r = positionPart.getRadians();
 
-        }
+                weapon.add(new PositionPart(x, y, r));
+                MovingPart movingPart = weapon.getPart(MovingPart.class);
+
+                if (gameData.getKeys().isDown(SPACE)) {
+                    System.out.println(this.bulletService);
+                    world.addEntity(this.bulletService.createBullet(weapon, gameData));
+                }
+
+                movingPart.process(gameData, weapon);
+                positionPart.process(gameData, weapon);
+
+            }
         }
     }
-    
-    public void setBulletService(BulletSPI bulletService){
+
+    public void setBulletService(BulletSPI bulletService) {
         this.bulletService = bulletService;
+        System.out.println("Registered bulletService");
+        System.out.println(bulletService);
+        System.out.println(this.bulletService);
     }
-    
-    public void removeBulletService(){
+
+    public void removeBulletService(BulletSPI bulletService) {
         this.bulletService = null;
+        System.out.println("Unregistered bulletService");
     }
 }

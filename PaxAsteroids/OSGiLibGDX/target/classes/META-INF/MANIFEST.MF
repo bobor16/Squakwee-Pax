@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.build.OSGiLibGDX
-Built-By: Bruger
+Built-By: rasmu
 Bundle-ManifestVersion: 2
-Bnd-LastModified: 1558093052756
+Bnd-LastModified: 1558353438693
 Embed-Dependency: *
 Import-Package: com.badlogic.gdx,com.badlogic.gdx.assets,com.badlogic.
  gdx.assets.loaders,com.badlogic.gdx.assets.loaders.resolvers,com.badl
@@ -232,5 +232,5 @@ Ignore-Package: org.objectweb.asm.util,org.objectweb.asm.tree.analysis
  m.tree
 Embed-Transitive: true
 Created-By: Apache Maven Bundle Plugin
-Build-Jdk: 1.8.0_171
+Build-Jdk: 1.8.0_211
 
