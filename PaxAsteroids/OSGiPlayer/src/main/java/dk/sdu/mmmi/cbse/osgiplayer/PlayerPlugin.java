@@ -22,6 +22,7 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void start(GameData gameData, World world) {
         // Add entities to the world
+        System.out.println("starting player");
         Entity player = createPlayer(gameData, world);
         playerID = world.addEntity(player);
     }
@@ -42,7 +43,7 @@ public class PlayerPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/rasmu/OneDrive/SDU/4. Semester/Project/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
+        String spriteLocation = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         player.add(new SpritePart(spriteLocation));
@@ -53,6 +54,7 @@ public class PlayerPlugin implements IGamePluginService {
     @Override
     public void stop(GameData gameData, World world) {
         // Remove entities
+        System.out.println("stopping player");
         world.removeEntity(playerID);
     }
 

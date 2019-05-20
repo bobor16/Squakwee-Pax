@@ -244,7 +244,7 @@ public class Game implements ApplicationListener {
                 this.assetManager.update();
                 System.out.println(this.assetManager.getLoadedAssets());
                 while (!this.assetManager.update()) {
-                    System.out.println(this.assetManager.getProgress());
+                    //System.out.println(this.assetManager.getProgress());
                 }
                 System.out.println(this.assetManager.getLoadedAssets());
                 for (String assetName : this.assetManager.getAssetNames()) {

@@ -12,10 +12,11 @@ import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
-import dk.sdu.mmmi.cbse.common.player.Player;
 import dk.sdu.mmmi.cbse.common.weapon.Weapon;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import java.io.File;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  *
@@ -24,6 +25,11 @@ import java.io.File;
 public class WeaponPlugin implements IGamePluginService {
 
     private String weaponID;
+    private BundleContext bundleContext;
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
     public WeaponPlugin() {
     }
@@ -34,6 +40,8 @@ public class WeaponPlugin implements IGamePluginService {
         System.out.println("starting weapon");
         Entity weapon = createWeapon(gameData, world);
         weaponID = world.addEntity(weapon);
+        this.bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+
     }
 
     private Entity createWeapon(GameData gameData, World world) {
@@ -50,7 +58,7 @@ public class WeaponPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(WeaponPlugin.class);
         File file = new File(WeaponPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/rasmu/OneDrive/SDU/4. Semester/Project/Squakwee-Pax/PaxAsteroids/OSGiWeapon/src/main/resources/weapon.png";
+        String spriteLocation = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiWeapon/src/main/resources/weapon.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         weapon.add(new SpritePart(spriteLocation));

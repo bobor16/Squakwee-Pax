@@ -12,8 +12,23 @@
     </properties>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>OSGiCommonBullet</artifactId>
-    <name>OSGiCommonBullet</name>
     <packaging>bundle</packaging>
+    <name>OSGiCommonBullet</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>!dk.sdu.mmmi.internal.*,dk.sdu.mmmi.*;version="1.0-SNAPSHOT",dk.sdu.mmmi.cbse.common.bullet,dk.sdu.mmmi.osgicommonbullet</Export-Package>
+                        <Private-Package>dk.sdu.mmmi.osgicommonbullet.*</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -21,4 +36,5 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 </project>

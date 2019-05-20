@@ -7,6 +7,7 @@ package dk.sdu.mmmi.cbse.common.data.entityparts;
 
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
+import dk.sdu.mmmi.cbse.common.data.GameKeys;
 import static java.lang.Math.sqrt;
 
 /**
@@ -23,7 +24,7 @@ public class MovingPart implements EntityPart {
         this.speed = Speed;
         
     }
-
+    
     public double getDx() {
         return dx;
     }
@@ -77,7 +78,7 @@ public class MovingPart implements EntityPart {
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-//        float radians = positionPart.getRadians();
+        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
         
@@ -163,7 +164,7 @@ public class MovingPart implements EntityPart {
         positionPart.setX(x);
         positionPart.setY(y);
 
-//        positionPart.setRadians(radians);
+        positionPart.setRadians(radians);
     }
 
 }
