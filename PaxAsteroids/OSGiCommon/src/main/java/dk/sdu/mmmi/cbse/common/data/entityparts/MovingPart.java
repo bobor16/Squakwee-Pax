@@ -22,9 +22,9 @@ public class MovingPart implements EntityPart {
 
     public MovingPart(float Speed) {
         this.speed = Speed;
-        
+
     }
-    
+
     public double getDx() {
         return dx;
     }
@@ -81,7 +81,6 @@ public class MovingPart implements EntityPart {
         float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
-        
         if (left) {
             dy = 0;
             dx = -speed;
@@ -135,11 +134,11 @@ public class MovingPart implements EntityPart {
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
-        if (!isDown() && !isUp()){
+        if (!isDown() && !isUp()) {
             dy = 0;
         }
         if (!isLeft() && !isRight()) {
-            dx = 0;            
+            dx = 0;
         }
         if (vec > speed) {
             dx = (dx / vec) * speed;

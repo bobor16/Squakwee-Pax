@@ -34,18 +34,18 @@ public class PlayerPlugin implements IGamePluginService {
         float deceleration = 1000;
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
-//        float radians = 3.1415f / 2;
+        float radians = 3.1415f / 2;
         player.add(new CameraPart());
         player.add(new LifePart(3, 69));
         player.setRadius(4);
         player.add(new MovingPart(speed));
         // x = 317 y = 312
-        player.add(new PositionPart(317, 312/*, radians*/));
+        player.add(new PositionPart(317, 312, radians));
         String filename = "/player.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
+        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         player.add(new SpritePart(spriteLocation));

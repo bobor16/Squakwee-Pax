@@ -45,21 +45,20 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
 
     @Override
     public Entity createBullet(Entity e, GameData gameData) {
-        Entity bullet = new dk.sdu.mmmi.osgicommonbullet.Bullet();
+        Entity bullet = new Bullet();
         float speed = 150;
-        float deceleration = 1000;
         float radians = 0;
 
         bullet.add(new LifePart(3, 69));
         bullet.setRadius(4);
-        bullet.add(new MovingPart(speed, deceleration, radians));
+        bullet.add(new MovingPart(speed));
         bullet.add(new PositionPart(e.getX(), e.getY(), radians));
 
         String filename = "/bullet.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(BulletPlugin.class);
         File file = new File(BulletPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/rasmu/OneDrive/Dokumenter/Squakwee-Pax/PaxAsteroids/OSGiBullet/src/main/resources/bullet.png";
+        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiBullet/src/main/resources/bullet.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         bullet.add(new SpritePart(spriteLocation));
