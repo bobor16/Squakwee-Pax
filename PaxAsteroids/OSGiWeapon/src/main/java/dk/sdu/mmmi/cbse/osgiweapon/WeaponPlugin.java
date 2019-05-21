@@ -44,7 +44,7 @@ public class WeaponPlugin implements IGamePluginService {
 
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
-        weapon.add(new MovingPart(speed, deceleration));
+        weapon.add(new MovingPart(speed));
 
         String filename = "/weapon.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();

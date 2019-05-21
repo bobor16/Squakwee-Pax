@@ -8,6 +8,7 @@ package dk.sdu.mmmi.cbse.osgienemy;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
@@ -43,7 +44,7 @@ public class EnemyPlugin implements IGamePluginService {
 //        float radians = 3.1415f / 2;
         enemy.add(new LifePart(40, 13));
         enemy.setRadius(4);
-        enemy.add(new MovingPart(speed, deceleration));
+        enemy.add(new MovingPart(speed));
         enemy.add(new PositionPart(295, 140/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -53,6 +54,7 @@ public class EnemyPlugin implements IGamePluginService {
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         enemy.add(new SpritePart(spriteLocation));
+        enemy.add(new CollisionPart());
 
         return enemy;
     }

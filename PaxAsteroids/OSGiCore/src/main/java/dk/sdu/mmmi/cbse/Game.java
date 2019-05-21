@@ -33,22 +33,25 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Game implements ApplicationListener {
 
@@ -56,10 +59,8 @@ public class Game implements ApplicationListener {
 
     //Camera
     private static OrthographicCamera cam;
-    private Viewport viewPort;
     private ShapeRenderer sr;
     private SpriteBatch batch;
-    private Texture texture;
     private int levelWidth = 0;
     private int levelHeight = 0;
 
@@ -80,14 +81,15 @@ public class Game implements ApplicationListener {
     private String blockedKey = "blocked";
     private String playerSpawn = "playerSpawn";
     private String objectKey = "objectLayer";
-    private TiledMapTileSet s;
-    private Sprite mapSprite;
 
     //Spawn
     private MapLayer spawnLayer;
 
     //Background music
     private Music music_level1;
+
+    //Get map to array
+    private boolean[][] tileChecker;
 
     //Rectangles
     private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
@@ -113,6 +115,13 @@ public class Game implements ApplicationListener {
         new LwjglApplication(this, cfg);
     }
 
+    private TiledMap loadMap() {
+        TmxMapLoader loader = new TmxMapLoader();
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
+        return map;
+
+    }
+
     @Override
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
@@ -120,15 +129,14 @@ public class Game implements ApplicationListener {
 
         float w = gameData.getDisplayWidth() / 2;
         float h = gameData.getDisplayHeight() / 2;
+        loadMap();
 
-        TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
-//        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get("2");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
+
         MapProperties props = map.getProperties();
         levelWidth = props.get("width", Integer.class);
         levelHeight = props.get("height", Integer.class);
-
+        System.out.println("Height: " + levelHeight + "\nWidth: " + levelWidth);
         cam = new OrthographicCamera(w, h);
         cam.setToOrtho(false, w, h);
         cam.translate(w, h);
@@ -139,18 +147,60 @@ public class Game implements ApplicationListener {
         music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
         music_level1.setLooping(true);
         music_level1.play();
-
-//        changeMap();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
+        int[][] blockedMap = new int[50][25];
+        for (int[] is : blockedMap) {
+            for (int i : is) {
+                i = 0;
+            }
+        }
+        objectLayer = map.getLayers().get(objectKey);
+        MapObjects objects = objectLayer.getObjects();
+        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+            int tx = (int) (rectangleObject.getRectangle().getX() / 16);
+            int ty = (int) (rectangleObject.getRectangle().getY() / 16);
+            int width = (int) (rectangleObject.getRectangle().getWidth() / 16);
+            int height = (int) (rectangleObject.getRectangle().getHeight() / 16);
+            System.out.println(tx + " " + ty);
+            for (int i = 0; i <= width - 1; i++) {
+                for (int j = 0; j <= height - 1; j++) {
+                    blockedMap[tx + i][ty + j] = 1;
+                }
+            }
+        }
+
+        String line = "";
+        for (int[] is : blockedMap) {
+            for (int i : is) {
+                line = line + i;
+            }
+            System.out.println(line);
+            line = "";
+        }
+    }
+
+    private int blockedTile() {
+        ArrayList<ArrayList<Integer>> listOfTiles = new ArrayList();
+        MapObjects mapObjects = map.getLayers().get(2).getObjects();
+        int isBlocked = 0;
+        for (MapObject mapObject : mapObjects) {
+            if (mapObject.getProperties().containsKey("blocked")) {
+                isBlocked = 1;
+            }
+        }
+
+//        int x = mapObjects.getCount();
+//        System.out.println(x);
+        return isBlocked;
     }
 
 //    public void spawnPlayer() {
-//        spawnLayer = map.getLayers().get("items");
+//        spawnLayer = map.getLayers().get("objectLayer");
 //        MapObjects objects = spawnLayer.getObjects();
 //
 //        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//            if (rectangleObject.getProperties().containsKey(playerSpawn)) {
+//            if (rectangleObject.getProperties().containsKey("bed")) {
 //                float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
 //                world.setPlayerSpawn(playerSpawn);
 //                System.out.println("Player spawn");
@@ -181,7 +231,6 @@ public class Game implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     public void changeMap() {
@@ -194,6 +243,7 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
+
         this.assetManager.update();
         this.assetManager.finishLoading();
         // Update
@@ -218,9 +268,10 @@ public class Game implements ApplicationListener {
                 objectLayer = map.getLayers().get(objectKey);
                 MapObjects objects = objectLayer.getObjects();
 
-                doorLayer = map.getLayers().get("doorLayer");
+                doorLayer = map.getLayers().get("objectLayer");
                 MapObjects doorObject = objectLayer.getObjects();
                 boolean enterCave = false;
+
                 for (RectangleMapObject rectangleObject : doorObject.getByType(RectangleMapObject.class)) {
                     if (rectangleObject.getProperties().containsKey("door")) {
                         Rectangle rect = rectangleObject.getRectangle();
@@ -230,35 +281,60 @@ public class Game implements ApplicationListener {
                         }
                     }
                 }
+                // test
                 if (enterCave) {
                     int j = 1;
                     for (int i = 0; i <= j; i++) {
                         if (i == 1) {
-                            System.out.println("The door is locked! ");
+//                            System.out.println("The door is locked! ");
                         }
                     }
                 }
-                boolean colliding = false;
 
-                for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-                    if (rectangleObject.getProperties().containsKey(blockedKey)) {
-                        Rectangle rectangle = rectangleObject.getRectangle();
-                        if (Intersector.overlaps(rectangle, entityRect)) {
-                            colliding = true;
-                            break;
+                CollisionPart collision = entity.getPart(CollisionPart.class);
+                if (collision != null) {
+                    collision.setIsColliding(false);
+                    for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                        if (rectangleObject.getProperties().containsKey(blockedKey)) {
+                            Rectangle rectangle = rectangleObject.getRectangle();
+                            if (Intersector.overlaps(rectangle, entityRect)) {
+//                                System.out.println(entity.getID() + " colliding with object");
+                                collision.setIsColliding(true);
+                                break;
+                            }
                         }
                     }
-                }
-                if (colliding) {
-                    position.setX(position.getOldX());
-                    position.setY(position.getOldY());
-//                    System.out.println("colliding");
-                } else {
-                    position.setOldX(position.getX());
-                    position.setOldY(position.getY());
+
+                    for (Entity otherEntity : world.getEntities()) {
+                        Sprite s = this.sprites.get(otherEntity.getID());
+                        CollisionPart otherCollision = otherEntity.getPart(CollisionPart.class);
+                        if (entity.getID().equals(otherEntity.getID()) || otherCollision == null || s == null) {
+
+                        } else {
+                            PositionPart p = otherEntity.getPart(PositionPart.class);
+                            Rectangle otherEntityRect = rectPool.obtain();
+                            otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
+                            if (Intersector.overlaps(otherEntityRect, entityRect)) {
+//                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
+                                collision.setIsColliding(true);
+                                break;
+                            }
+                        }
+                    }
+
+                    if (collision.isColliding()) {
+                        position.setX(position.getOldX());
+                        position.setY(position.getOldY());
+                    } else {
+                        position.setOldX(position.getX());
+                        position.setOldY(position.getY());
+
+                        //Get x & y for the player position
 //                    System.out.println("x: " + position.getX() + " y: " + position.getY());
-//                    System.out.println("!colliding");
+                    }
                 }
+
+                blockedTile();
                 if (entity.getPart(CameraPart.class) != null) {
 
                     cam.position.set(sprite.getX(), sprite.getY(), 0);
@@ -292,7 +368,6 @@ public class Game implements ApplicationListener {
         }
         camera.position.set(position);
         camera.update();
-
     }
 
     private void draw() {
@@ -302,29 +377,34 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
 
             } else {
-                SpritePart spritePart = entity.getPart(SpritePart.class);
+                SpritePart spritePart = entity.getPart(SpritePart.class
+                );
                 String location = spritePart.getSpriteLocation();
 
-                this.assetManager.load(location, Texture.class);
+                this.assetManager.load(location, Texture.class
+                );
                 this.assetManager.update();
-                System.out.println(this.assetManager.getLoadedAssets());
+//                System.out.println(this.assetManager.getLoadedAssets());
                 while (!this.assetManager.update()) {
-                    System.out.println(this.assetManager.getProgress());
+//                    System.out.println(this.assetManager.getProgress());
                 }
-                System.out.println(this.assetManager.getLoadedAssets());
+//                System.out.println(this.assetManager.getLoadedAssets());
                 for (String assetName : this.assetManager.getAssetNames()) {
-                    System.out.println(assetName);
+//                    System.out.println(assetName);
 
                 }
-                if (this.assetManager.isLoaded(location, Texture.class)) {
-                    System.out.println("Sprite Loaded");
+                if (this.assetManager.isLoaded(location, Texture.class
+                )) {
+//                    System.out.println("Sprite Loaded");
                 } else {
-                    System.out.println("Sprite Not Loaded");
+//                    System.out.println("Sprite Not Loaded");
 
                 }
 
-                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class));
-                PositionPart position = entity.getPart(PositionPart.class);
+                Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class
+                ));
+                PositionPart position = entity.getPart(PositionPart.class
+                );
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);
