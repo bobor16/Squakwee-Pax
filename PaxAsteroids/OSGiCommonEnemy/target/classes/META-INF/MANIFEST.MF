@@ -9,7 +9,11 @@ Bnd-LastModified: 1558006306295
 =======
 Built-By: borga
 Bundle-ManifestVersion: 2
+<<<<<<< HEAD
 Bnd-LastModified: 1557747815428
+>>>>>>> Camera
+=======
+Bnd-LastModified: 1558443326004
 >>>>>>> Camera
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy

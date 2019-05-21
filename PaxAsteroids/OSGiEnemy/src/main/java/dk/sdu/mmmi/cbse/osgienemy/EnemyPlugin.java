@@ -8,6 +8,7 @@ package dk.sdu.mmmi.cbse.osgienemy;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
@@ -45,7 +46,7 @@ public class EnemyPlugin implements IGamePluginService {
         enemy.add(new LifePart(3, 69));
         enemy.setRadius(4);
         enemy.add(new MovingPart(speed));
-        enemy.add(new PositionPart(x, y/*, radians*/));
+        enemy.add(new PositionPart(295, 140/*, radians*/));
         String filename = "/Chicken.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(EnemyPlugin.class);
@@ -54,6 +55,7 @@ public class EnemyPlugin implements IGamePluginService {
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         enemy.add(new SpritePart(spriteLocation));
+        enemy.add(new CollisionPart());
 
         return enemy;
     }
@@ -64,5 +66,5 @@ public class EnemyPlugin implements IGamePluginService {
         System.out.println("stopping enemy");
         world.removeEntity(enemyID);
     }
-    
+
 }

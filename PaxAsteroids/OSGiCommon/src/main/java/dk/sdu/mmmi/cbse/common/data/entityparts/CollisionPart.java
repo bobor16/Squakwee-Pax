@@ -14,21 +14,23 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
  *
  * @author Borgar Bordoy
  */
-public class CollisionPart implements IPostEntityProcessingService {
+public class CollisionPart implements EntityPart {
 
+    private boolean isColliding;
     @Override
-    public void process(GameData gameData, World world) {
-        for (Entity entity : world.getEntities()) {
-            for (Entity e : world.getEntities()) {
-                if (e.getID().equals(entity.getID())) {
-                    continue;
-                }
-
-                PositionPart positionA = entity.getPart(PositionPart.class);
-
-            }
-
-        }
+    public void process(GameData gameData, Entity entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public CollisionPart(){
+        this.isColliding = false;
     }
 
+    public boolean isColliding() {
+        return isColliding;
+    }
+
+    public void setIsColliding(boolean isColliding) {
+        this.isColliding = isColliding;
+    }
 }
