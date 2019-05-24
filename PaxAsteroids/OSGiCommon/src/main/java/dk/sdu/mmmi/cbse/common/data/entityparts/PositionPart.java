@@ -19,6 +19,15 @@ public class PositionPart implements EntityPart {
     private float radians;
     private float oldX;
     private float oldY;
+    private float mouseRadians;
+
+    public float getMouseRadians() {
+        return mouseRadians;
+    }
+
+    public void setMouseRadians(float mouseRadians) {
+        this.mouseRadians = mouseRadians;
+    }
 
     public float getOldX() {
         return oldX;

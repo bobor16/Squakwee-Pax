@@ -5,6 +5,9 @@
  */
 package dk.sdu.mmmi.cbse.common.data.entityparts;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
@@ -17,12 +20,16 @@ import static java.lang.Math.sqrt;
 public class MovingPart implements EntityPart {
 
     private double dx, dy;
-    private float speed;
-    private boolean left, right, up, down, moving;
+    private float speed, radians;
+    private boolean left, right, up, down, moving, mouse;
 
     public MovingPart(float Speed) {
         this.speed = Speed;
+    }
 
+    public MovingPart(float Speed, float radians) {
+        this.speed = Speed;
+        this.radians = radians;
     }
 
     public double getDx() {
@@ -41,8 +48,16 @@ public class MovingPart implements EntityPart {
         this.left = left;
     }
 
+    public void setMouse(boolean mouse) {
+        this.mouse = mouse;
+    }
+
     public float getSpeed() {
         return speed;
+    }
+
+    public boolean isMouse() {
+        return mouse;
     }
 
     public boolean isLeft() {
@@ -130,6 +145,12 @@ public class MovingPart implements EntityPart {
         if (right && left) {
             dy = 0;
             dx = 0;
+        }
+        if (mouse) {
+            float angle = positionPart.getMouseRadians(); 
+            dx = speed * Math.cos(angle);
+            dy = speed * Math.sin(angle);
+//            System.out.println("dy: " + dy + " dx " + dx + " angle: " + angle);
         }
 
         // deccelerating

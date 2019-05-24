@@ -86,8 +86,7 @@ public class Game implements ApplicationListener {
     private TiledMapTileSet s;
     
     //Mouse position
-    private final Vector2 mouseInWorld2D = new Vector2();
-    private final Vector3 mouseInWorld3D = new Vector3();
+    
     private Sprite mapSprite;
     private String objectKey = "objectLayer";
 
@@ -126,7 +125,7 @@ public class Game implements ApplicationListener {
 
     private TiledMap loadMap() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
+        map = loader.load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
         return map;
 
     }
@@ -153,7 +152,7 @@ public class Game implements ApplicationListener {
         assetManager = new AssetManager();
         batch = new SpriteBatch();
 
-        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
+        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
         music_level1.setLooping(true);
         music_level1.play();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
@@ -231,19 +230,11 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
-
+//cam.unproject(mouseInWorld3D); NOK FEJL HER
         update();
         draw();
         
-        mouseInWorld3D.x = Gdx.input.getX();
-        mouseInWorld3D.y = Gdx.input.getY();
-        mouseInWorld3D.z = 0;
-        
-        cam.unproject(mouseInWorld3D);
-        mouseInWorld2D.x = mouseInWorld3D.x;
-        mouseInWorld2D.y = mouseInWorld3D.y;
-        
-        System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
+      
 
         sr = new ShapeRenderer();
     }
@@ -254,7 +245,7 @@ public class Game implements ApplicationListener {
 
     public void changeMap() {
 //        Gdx.app.postRunnable(() -> {
-        cave = new TmxMapLoader().load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        cave = new TmxMapLoader().load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         renderer.getMap().dispose();
         renderer.setMap(cave);
         System.out.println("Hello from inside the cave");

@@ -5,6 +5,9 @@
  */
 package dk.sdu.mmmi.cbse.osgiweapon;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -23,12 +26,15 @@ import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
 public class WeaponProcessor implements IEntityProcessingService {
 
     private static BulletSPI bulletService;
+    private final Vector2 mouseInWorld2D = new Vector2();
+    private final Vector3 mouseInWorld3D = new Vector3();
 
     @Override
     public void process(GameData gameData, World world) {
         for (Entity weapon : world.getEntities(Weapon.class)) {
             for (Entity player : world.getEntities(Player.class)) {
                 PositionPart positionPart = player.getPart(PositionPart.class);
+                PositionPart positionPartWeapon = weapon.getPart(PositionPart.class);
                 float x = positionPart.getX();
                 float y = positionPart.getY();
                 float r = positionPart.getRadians();
@@ -37,10 +43,19 @@ public class WeaponProcessor implements IEntityProcessingService {
                 MovingPart movingPart = weapon.getPart(MovingPart.class);
 
                 if (gameData.getKeys().isDown(SPACE)) {
+                    int graphicsX = Gdx.graphics.getHeight();
+                    mouseInWorld3D.x = Gdx.input.getX();
+                    mouseInWorld3D.y = Gdx.input.getY();
+                    mouseInWorld3D.z = 0;
+                    mouseInWorld2D.x = mouseInWorld3D.x;
+                    mouseInWorld2D.y = mouseInWorld3D.y;
+                    
+                    float radiansBullet = (float) Math.atan2(y - mouseInWorld2D.y, x - mouseInWorld2D.x);
+                    System.out.println("Radians bullet: " + radiansBullet);
+                    positionPartWeapon.setMouseRadians(radiansBullet);
                     System.out.println(this.bulletService);
                     world.addEntity(this.bulletService.createBullet(weapon, gameData));
                 }
-
                 movingPart.process(gameData, weapon);
                 positionPart.process(gameData, weapon);
 
