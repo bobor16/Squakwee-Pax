@@ -5,12 +5,16 @@ Built-By: marti
 Bundle-ManifestVersion: 2
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 Bnd-LastModified: 1558692065382
 =======
 Bnd-LastModified: 1558689207374
 >>>>>>> master
 =======
 Bnd-LastModified: 1558709232466
+>>>>>>> master
+=======
+Bnd-LastModified: 1558869051858
 >>>>>>> master
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy

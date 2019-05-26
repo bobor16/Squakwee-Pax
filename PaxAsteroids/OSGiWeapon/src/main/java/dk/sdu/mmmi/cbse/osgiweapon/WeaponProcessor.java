@@ -5,9 +5,6 @@
  */
 package dk.sdu.mmmi.cbse.osgiweapon;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
@@ -41,9 +38,9 @@ public class WeaponProcessor implements IEntityProcessingService {
                 weapon.add(new PositionPart(x, y, r));
                 MovingPart movingPart = weapon.getPart(MovingPart.class);
 
-                if (gameData.getKeys().j(SPACE)) {
+                if (gameData.getKeys().isDown(SPACE)) {
                     System.out.println(this.bulletService);
-                    world.addEntity(this.bulletService.createBullet(weapon, gameData, 0, 0));
+                    world.addEntity(this.bulletService.createBullet(weapon, gameData));
                 }
                 movingPart.process(gameData, weapon);
                 positionPart.process(gameData, weapon);
