@@ -12,7 +12,7 @@
   <groupId>dk.sdu.mmmi.build</groupId>
   <artifactId>shared-plugin-settings</artifactId>
 
-  <name>PaxAteroids - plugin configuration</name>
+  <name>Squakwee - plugin configuration</name>
 
   <packaging>pom</packaging>
 

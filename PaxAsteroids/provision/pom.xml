@@ -12,7 +12,7 @@
     <groupId>dk.sdu.mmmi.build</groupId>
     <artifactId>provision</artifactId>
 
-    <name>PaxAteroids - imported bundles</name>
+    <name>Squakwee - imported bundles</name>
 
     <packaging>pom</packaging>
 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="dk.sdu.mmmi.cbse.osgiweapon.WeaponProcessor">
-    <implementation class="dk.sdu.mmmi.cbse.osgiweapon.WeaponProcessor"/>
-
-    <reference bind="setBulletService" cardinality="0..n"
-               interface="dk.sdu.mmmi.osgicommonbullet.BulletSPI"
-               name="BulletSPI" policy="dynamic" unbind="removeBulletService"/>
-
-</scr:component>
