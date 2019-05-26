@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: OSGiMap
+Built-By: borga
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1558896261132
+Bundle-ActivationPolicy: lazy
+Import-Package: dk.sdu.mmmi.cbse.common.data;version="1.0.0.SNAPSHOT",
+ dk.sdu.mmmi.cbse.common.data.entityparts;version="1.0.0.SNAPSHOT",dk.
+ sdu.mmmi.cbse.common.services;version="1.0.0.SNAPSHOT",dk.sdu.mmmi.cb
+ se.osgimap;version="1.0.0.SNAPSHOT"
+Service-Component: META-INF/gameplugin.xml
+Tool: Bnd-0.0.255
+Export-Package: dk.sdu.mmmi.cbse.common.data.entityparts;uses:="dk.sdu
+ .mmmi.cbse.common.data";version="1.0.0.SNAPSHOT",dk.sdu.mmmi.cbse.com
+ mon.data;uses:="dk.sdu.mmmi.cbse.common.data.entityparts";version="1.
+ 0.0.SNAPSHOT",dk.sdu.mmmi.cbse.osgimap;uses:="dk.sdu.mmmi.cbse.common
+ .data,dk.sdu.mmmi.cbse.common.services";version="1.0.0.SNAPSHOT",dk.s
+ du.mmmi.cbse.common.services;uses:="dk.sdu.mmmi.cbse.common.data";ver
+ sion="1.0.0.SNAPSHOT"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: OSGiMap
+Private-Package: maps,music
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_171
+

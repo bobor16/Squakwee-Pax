@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-Description: Generated using Pax-Construct
+Bundle-SymbolicName: dk.sdu.mmmi.common
+Built-By: borga
+Bundle-ManifestVersion: 2
+Bnd-LastModified: 1558896266977
+Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.w
+ eapon
+Tool: Bnd-0.0.255
+Export-Package: dk.sdu.mmmi.cbse.common.weapon;uses:="dk.sdu.mmmi.cbse
+ .common.data"
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Name: OSGiCommonWeapon
+Private-Package: dk.sdu.mmmi.cbse.commen.weapon.*
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_171
+
