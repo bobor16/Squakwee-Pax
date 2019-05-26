@@ -23,7 +23,6 @@ import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
 public class WeaponProcessor implements IEntityProcessingService {
 
     private static BulletSPI bulletService;
-    
 
     @Override
     public void process(GameData gameData, World world) {
@@ -41,6 +40,7 @@ public class WeaponProcessor implements IEntityProcessingService {
                 if (gameData.getKeys().isDown(SPACE)) {
                     System.out.println(this.bulletService);
                     world.addEntity(this.bulletService.createBullet(weapon, gameData));
+                    gameData.getKeys().setKey(SPACE, false);
                 }
                 movingPart.process(gameData, weapon);
                 positionPart.process(gameData, weapon);

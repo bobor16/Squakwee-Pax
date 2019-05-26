@@ -43,11 +43,12 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.BulletPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import java.util.ArrayList;
 
 public class Game implements ApplicationListener {
@@ -78,10 +79,9 @@ public class Game implements ApplicationListener {
     private String blockedKey = "blocked";
     private String playerSpawn = "playerSpawn";
     private String blockedLayer = "blockedLayer";
-    private TiledMapTileSet s;
+    private TiledMapTileSet otherSprite;
 
     //Mouse position
-    
     private Sprite mapSprite;
     private String objectKey = "objectLayer";
 
@@ -120,7 +120,7 @@ public class Game implements ApplicationListener {
 
     private TiledMap loadMap() {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
+        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
         return map;
 
     }
@@ -147,7 +147,7 @@ public class Game implements ApplicationListener {
         assetManager = new AssetManager();
         batch = new SpriteBatch();
 
-        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
+        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
         music_level1.setLooping(true);
         music_level1.play();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
@@ -229,14 +229,13 @@ public class Game implements ApplicationListener {
         update();
         draw();
 
-        mouseInWorld3D.x = Gdx.input.getX();
-        mouseInWorld3D.y = Gdx.input.getY();
-        mouseInWorld3D.z = 0;
-
-        cam.unproject(mouseInWorld3D);
-        mouseInWorld2D.x = mouseInWorld3D.x;
-        mouseInWorld2D.y = mouseInWorld3D.y;
-
+//        mouseInWorld3D.x = Gdx.input.getX();
+//        mouseInWorld3D.y = Gdx.input.getY();
+//        mouseInWorld3D.z = 0;
+//
+//        cam.unproject(mouseInWorld3D);
+//        mouseInWorld2D.x = mouseInWorld3D.x;
+//        mouseInWorld2D.y = mouseInWorld3D.y;
 //        System.out.println(mouseInWorld2D.x + " " + mouseInWorld2D.y);
         sr = new ShapeRenderer();
     }
@@ -274,7 +273,8 @@ public class Game implements ApplicationListener {
                 PositionPart position = entity.getPart(PositionPart.class);
                 Sprite sprite = this.sprites.get(entity.getID());
                 sprite.setPosition(position.getX(), position.getY());
-
+                CollisionPart collision = entity.getPart(CollisionPart.class);
+                BulletPart b = entity.getPart(BulletPart.class);
                 Rectangle entityRect = rectPool.obtain();
                 entityRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
 
@@ -294,17 +294,7 @@ public class Game implements ApplicationListener {
                         }
                     }
                 }
-                // test
-                if (enterCave) {
-                    int j = 1;
-                    for (int i = 0; i <= j; i++) {
-                        if (i == 1) {
-//                            System.out.println("The door is locked! ");
-                        }
-                    }
-                }
 
-                CollisionPart collision = entity.getPart(CollisionPart.class);
                 if (collision != null) {
                     collision.setIsColliding(false);
                     for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
@@ -312,60 +302,78 @@ public class Game implements ApplicationListener {
                             Rectangle rectangle = rectangleObject.getRectangle();
                             if (Intersector.overlaps(rectangle, entityRect)) {
 //                                System.out.println(entity.getID() + " colliding with object");
+                                if (b != null) {
+                                    world.removeEntity(entity);
+                                }
                                 collision.setIsColliding(true);
                                 break;
                             }
                         }
                     }
 
-                    if (collision != null) {
-                        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-                            if (rectangleObject.getProperties().containsKey("caveDoor")) {
-                                Rectangle rect = rectangleObject.getRectangle();
-                                if (Intersector.overlaps(rect, entityRect)) {
-                                    enterCave = true;
-                                    break;
-                                }
+                    for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                        if (rectangleObject.getProperties().containsKey("caveDoor")) {
+                            Rectangle rect = rectangleObject.getRectangle();
+                            if (Intersector.overlaps(rect, entityRect)) {
+                                enterCave = true;
+                                break;
                             }
                         }
-                        if (enterCave) {
-                            map.getLayers().get("topLayer").setVisible(false);
-                            map.getLayers().get("bottomLayer").setVisible(false);
-                            map.getLayers().get("caveLayer").setVisible(true);
-                            map.getLayers().get("caveLayer2").setVisible(true);
-                        }
+                    }
+                    if (enterCave) {
+                        map.getLayers().get("topLayer").setVisible(false);
+                        map.getLayers().get("bottomLayer").setVisible(false);
+                        map.getLayers().get("caveLayer").setVisible(true);
+                        map.getLayers().get("caveLayer2").setVisible(true);
+                    }
 
-                        for (Entity otherEntity : world.getEntities()) {
-                            Sprite s = this.sprites.get(otherEntity.getID());
-                            CollisionPart otherCollision = otherEntity.getPart(CollisionPart.class);
-                            if (entity.getID().equals(otherEntity.getID()) || otherCollision == null || s == null) {
+                    for (Entity otherEntity : world.getEntities()) {
+                        Sprite s = this.sprites.get(otherEntity.getID());
+                        CollisionPart otherCollision = otherEntity.getPart(CollisionPart.class);
+                        BulletPart t = otherEntity.getPart(BulletPart.class);
+                        if (entity.getID().equals(otherEntity.getID()) || otherCollision == null || s == null) {
 
-                            } else {
-                                PositionPart p = otherEntity.getPart(PositionPart.class);
-                                Rectangle otherEntityRect = rectPool.obtain();
-                                otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
-                                if (Intersector.overlaps(otherEntityRect, entityRect)) {
+                        } else if (b != null) {
+                            PositionPart p = otherEntity.getPart(PositionPart.class);
+                            Rectangle otherEntityRect = rectPool.obtain();
+                            otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
+
+                            if (Intersector.overlaps(otherEntityRect, entityRect)) {
 //                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
-                                    collision.setIsColliding(true);
-                                    break;
+
+                                LifePart l = otherEntity.getPart(LifePart.class);
+                                if (b != null && l != null) {
+                                    l.hit();
+                                    world.removeEntity(entity);
                                 }
+                                break;
                             }
-                        }
+                        } else if (t != null) {
 
-                        if (collision.isColliding()) {
-                            position.setX(position.getOldX());
-                            position.setY(position.getOldY());
                         } else {
-                            position.setOldX(position.getX());
-                            position.setOldY(position.getY());
-
-                            //Get x & y for the player position
-//                    System.out.println("x: " + position.getX() + " y: " + position.getY());
+                            PositionPart p = otherEntity.getPart(PositionPart.class);
+                            Rectangle otherEntityRect = rectPool.obtain();
+                            otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
+                            if (Intersector.overlaps(otherEntityRect, entityRect)) {
+//                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
+                                collision.setIsColliding(true);
+                                break;
+                            }
                         }
                     }
 
-                    if (entity.getPart(CameraPart.class) != null) {
+                    if (collision.isColliding()) {
+                        position.setX(position.getOldX());
+                        position.setY(position.getOldY());
+                    } else {
+                        position.setOldX(position.getX());
+                        position.setOldY(position.getY());
 
+                        //Get x & y for the player position
+//                    System.out.println("x: " + position.getX() + " y: " + position.getY());
+                    }
+
+                    if (entity.getPart(CameraPart.class) != null) {
                         cam.position.set(sprite.getX(), sprite.getY(), 0);
                         float startX = cam.viewportWidth / 2;
                         float startY = cam.viewportHeight / 2;
@@ -406,12 +414,15 @@ public class Game implements ApplicationListener {
                 sprites.get(entity.getID()).draw(batch);
 
             } else {
-                SpritePart spritePart = entity.getPart(SpritePart.class);
+                SpritePart spritePart = entity.getPart(SpritePart.class
+                );
                 String location = spritePart.getSpriteLocation();
 
-                this.assetManager.load(location, Texture.class);
+                this.assetManager.load(location, Texture.class
+                );
                 this.assetManager.update();
 //                System.out.println(this.assetManager.getLoadedAssets());
+
                 while (!this.assetManager.update()) {
                     //System.out.println(this.assetManager.getProgress());
                 }
@@ -420,7 +431,8 @@ public class Game implements ApplicationListener {
 //                    System.out.println(assetName);
 
                 }
-                if (this.assetManager.isLoaded(location, Texture.class)) {
+                if (this.assetManager.isLoaded(location, Texture.class
+                )) {
 //                    System.out.println("Sprite Loaded");
                 } else {
 //                    System.out.println("Sprite Not Loaded");

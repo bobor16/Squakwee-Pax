@@ -1,21 +1,9 @@
 Manifest-Version: 1.0
 Bundle-Description: Generated using Pax-Construct
 Bundle-SymbolicName: dk.sdu.mmmi.common
-Built-By: marti
+Built-By: borga
 Bundle-ManifestVersion: 2
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-Bnd-LastModified: 1558692065382
-=======
-Bnd-LastModified: 1558689207374
->>>>>>> master
-=======
-Bnd-LastModified: 1558709232466
->>>>>>> master
-=======
-Bnd-LastModified: 1558869051858
->>>>>>> master
+Bnd-LastModified: 1558886234577
 Import-Package: dk.sdu.mmmi.cbse.common.data,dk.sdu.mmmi.cbse.common.e
  nemy
 Tool: Bnd-0.0.255
@@ -25,5 +13,5 @@ Bundle-Version: 1.0.0.SNAPSHOT
 Bundle-Name: OSGiCommonEnemy
 Private-Package: dk.sdu.mmmi.cbse.common.enemy.*
 Created-By: Apache Maven Bundle Plugin
-Build-Jdk: 1.8.0_141
+Build-Jdk: 1.8.0_171
 

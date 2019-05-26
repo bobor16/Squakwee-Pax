@@ -26,11 +26,5 @@
             <artifactId>org.osgi.compendium</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>com.badlogicgames.gdx</groupId>
-            <artifactId>gdx</artifactId>
-            <version>1.9.6</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
 </project>

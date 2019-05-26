@@ -3,7 +3,6 @@ package dk.sdu.mmmi.cbse.osgiplayer;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.World;
-import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
@@ -36,7 +35,7 @@ public class PlayerPlugin implements IGamePluginService {
         float y = world.getPlayerSpawn()[1];
         float radians = 3.1415f / 2;
         player.add(new CameraPart());
-        player.add(new LifePart(3, 69));
+//        player.add(new LifePart(3, 69));
         player.setRadius(4);
         player.add(new MovingPart(speed));
         // x = 317 y = 312
@@ -45,11 +44,14 @@ public class PlayerPlugin implements IGamePluginService {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(PlayerPlugin.class);
         File file = new File(PlayerPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/marti/OneDrive - Syddansk Universitet/Netbeans projekter/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
+        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiPlayer/src/main/resources/player.png";
         System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         player.add(new SpritePart(spriteLocation));
         player.add(new CollisionPart());
+        
+        CollisionPart c = player.getPart(CollisionPart.class);
+        c.setBulletCollision(false);
 
         return player;
     }

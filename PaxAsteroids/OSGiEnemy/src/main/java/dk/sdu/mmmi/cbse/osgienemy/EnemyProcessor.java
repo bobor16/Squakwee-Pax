@@ -12,6 +12,8 @@ import static dk.sdu.mmmi.cbse.common.data.GameKeys.LEFT;
 import static dk.sdu.mmmi.cbse.common.data.GameKeys.RIGHT;
 import static dk.sdu.mmmi.cbse.common.data.GameKeys.UP;
 import dk.sdu.mmmi.cbse.common.data.World;
+import dk.sdu.mmmi.cbse.common.data.entityparts.BulletPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.enemy.Enemy;
@@ -30,16 +32,22 @@ public class EnemyProcessor implements IEntityProcessingService {
 
             PositionPart positionPart = entity.getPart(PositionPart.class);
             MovingPart movingPart = entity.getPart(MovingPart.class);
+            LifePart life = entity.getPart(LifePart.class);
+            if (life.isDead()) {
+                world.removeEntity(entity);
+            }
 
-            double random = Math.random();
-            movingPart.setLeft(random < 0.2);
-            movingPart.setRight(random > 0.3 && random < 0.5);
-            movingPart.setUp(random > 0.5 && random < 0.7);
-            movingPart.setDown(random > 0.7 && random < 0.9);
+//            double random = Math.random();
+//            movingPart.setLeft(random < 0.2);
+//            movingPart.setRight(random > 0.3 && random < 0.5);
+//            movingPart.setUp(random > 0.5 && random < 0.7);
+//            movingPart.setDown(random > 0.7 && random < 0.9);
 
             movingPart.process(gameData, entity);
             positionPart.process(gameData, entity);
+            life.process(gameData, entity);
             updateShape(entity);
+            
 
         }
     }

@@ -67,8 +67,6 @@ public class Entity implements Serializable {
         this.previousY = previousY;
     }
 
-    
-    
     public void add(EntityPart part) {
         parts.put(part.getClass(), part);
     }

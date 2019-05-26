@@ -51,14 +51,15 @@ public class LifePart implements EntityPart {
     public void setExpiration(float expiration) {
         this.expiration = expiration;
     }
+    
+    public void hit(){
+        this.life--;
+    }
 
     @Override
     public void process(GameData gameData, Entity entity) {
-        if (isHit) {
-            life = - 1;
-            isHit = false;
-        }
         if (life <= 0) {
+            System.out.println("Dead");
             dead = true;
         }
 
