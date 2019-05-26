@@ -5,9 +5,6 @@
  */
 package dk.sdu.mmmi.cbse.common.data.entityparts;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import dk.sdu.mmmi.cbse.common.data.Entity;
 import dk.sdu.mmmi.cbse.common.data.GameData;
 import dk.sdu.mmmi.cbse.common.data.GameKeys;
@@ -18,8 +15,6 @@ import static java.lang.Math.sqrt;
  * @author Alexander
  */
 public class MovingPart implements EntityPart {
-private final Vector2 mouseInWorld2D = new Vector2();
-    private final Vector3 mouseInWorld3D = new Vector3();
     private double dx, dy;
     private float speed, radians;
     private boolean left, right, up, down, moving, mouse;
@@ -146,28 +141,6 @@ private final Vector2 mouseInWorld2D = new Vector2();
         if (right && left) {
             dy = 0;
             dx = 0;
-        }
-        if (mouse) {
-            // virker ikke ;(
-            int graphicsY = Gdx.graphics.getHeight();
-                       
-                    mouseInWorld3D.x = Gdx.input.getX();
-                    mouseInWorld3D.y = Gdx.input.getY();
-                    mouseInWorld3D.z = 0;
-                    mouseInWorld2D.x = mouseInWorld3D.x;
-                    mouseInWorld2D.y = mouseInWorld3D.y;
-                    // MOUSE KOORDINATOR ER KUN PÅ VINDUET DER VISES MEN PLAYERS KOORDINATOR ER I HELE MAPPET WTFF.F..F.F.F.FF..F.F.F.
-                    float radiansBullet = (float) Math.atan2(mouseInWorld2D.x - x, mouseInWorld2D.y - y);
-                    
-                    System.out.println("mouse X: " + mouseInWorld2D.x);
-                    System.out.println("mouse y: " + mouseInWorld2D.y);
-                    System.out.println("player X: " + x);
-                    System.out.println("player X: " + y);
-//            float angle = positionPart.getMouseRadians()
-            dx = speed * Math.cos(radiansBullet);
-            dy = speed * Math.sin(radiansBullet);
-                
-//            System.out.println("dy: " + dy + " dx " + dx + " angle: " + radiansBullet);
         }
 
         // deccelerating

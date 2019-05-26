@@ -64,7 +64,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     }
 
     @Override
-    public Entity createBullet(Entity e, GameData gameData, int mouseX, int mouseY) {
+    public Entity createBullet(Entity e, GameData gameData) {
 
         PositionPart positionPart = e.getPart(PositionPart.class);
         float x = positionPart.getX();
