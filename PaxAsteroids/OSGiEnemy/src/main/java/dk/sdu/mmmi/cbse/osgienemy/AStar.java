@@ -22,19 +22,6 @@ public class AStar {
     private int startI, startJ;
     private int endI, endJ;
 
-//    public static void main(String[] args) {
-//        int[][] test;
-//        AStar aStar = new AStar(5, 5, 0, 0, 3, 2, test = new int[][]{{0, 4}, {2, 2}, {3, 1}, {3, 3}, {2, 1}, {2, 3}});
-//        for (int i = 0; i < test.length; i++) {
-//            for (int j = 0; j < test[i].length; j++) {
-////                System.out.println(test[i][j]);
-//            }
-//        }
-//        aStar.display(); //ok
-//        aStar.process(); //index out of bound -1
-//        aStar.displayScores(); //index out of bound 5
-//        aStar.displaySolution(); //ok
-//    }
     public AStar(int ROW, int COL, int startI, int startJ, int endI, int endJ, int[][] blocks) {
         tileMap = new Node[ROW][COL];
         closedNodes = new boolean[ROW][COL];

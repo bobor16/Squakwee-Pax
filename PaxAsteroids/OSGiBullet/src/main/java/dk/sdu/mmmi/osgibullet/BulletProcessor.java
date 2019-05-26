@@ -15,11 +15,9 @@ import static dk.sdu.mmmi.cbse.common.data.GameKeys.UP;
 import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.data.entityparts.BulletPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
-import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.PositionPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
-import dk.sdu.mmmi.cbse.common.data.entityparts.TimerPart;
 import dk.sdu.mmmi.cbse.common.services.IEntityProcessingService;
 import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
 import java.io.File;
@@ -38,7 +36,6 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         for (Entity bullet : world.getEntities(Bullet.class)) {
             PositionPart positionPart = bullet.getPart(PositionPart.class);
             MovingPart movingPart = bullet.getPart(MovingPart.class);
-//            movingPart.setMouse(true); // FIKS KOORDINATOR I MOVING PART
             movingPart.process(gameData, bullet);
             positionPart.process(gameData, bullet);
         }
@@ -78,14 +75,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
             movingPart.setRight(true);
         }
 
-        String filename = "/bullet.png";
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
-//        System.out.println(BulletPlugin.class);
-        File file = new File(BulletPlugin.class.getResource(filename).getFile());
-
-String spriteLocation = new File("").getAbsolutePath() + "/bundles/OSGiBullet_1.0.0.SNAPSHOT.jar!/bullet.png";
-        spriteLocation = spriteLocation.replace("\\", "/");        System.out.println(new File("").getAbsolutePath() + "/target");
-        System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
+        String spriteLocation = (new File("").getAbsolutePath()).replace("\\", "/") + "/bundles/OSGiBullet_1.0.0.SNAPSHOT.jar!/bullet.png";
         bullet.add(new SpritePart(spriteLocation));
 
         return bullet;

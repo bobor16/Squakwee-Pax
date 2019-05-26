@@ -12,7 +12,6 @@ import dk.sdu.mmmi.cbse.common.data.World;
 import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.MovingPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
-import dk.sdu.mmmi.cbse.common.data.entityparts.TimerPart;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import java.io.File;
 
@@ -31,14 +30,11 @@ public class BulletPlugin implements IGamePluginService {
     @Override
     public void start(GameData gameData, World world) {
         System.out.println("starting bullet");
-//        Entity bullet = createBullet(gameData, world);
-        //bulletID = world.addEntity(bullet);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
         System.out.println("stopping bullet");
-//        world.removeEntity(bulletID);
     }
 
 }

@@ -30,12 +30,8 @@ public class PlayerPlugin implements IGamePluginService {
     private Entity createPlayer(GameData gameData, World world) {
         Entity player = new Player();
         float speed = 150;
-        float deceleration = 1000;
-        float x = world.getPlayerSpawn()[0];
-        float y = world.getPlayerSpawn()[1];
         float radians = 3.1415f / 2;
         player.add(new CameraPart());
-//        player.add(new LifePart(3, 69));
         player.setRadius(4);
         player.add(new MovingPart(speed));
         // x = 317 y = 312

@@ -35,6 +35,7 @@ public class MapPlugin implements IGamePluginService {
         copy(getClass().getResourceAsStream("/music/level1.ogg"), FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/music/level1.ogg");
 
         gameData.setMap(FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/maps/TileMap2.tmx");
+        gameData.setMusic(FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/music/level1.ogg");
     }
 
     @Override

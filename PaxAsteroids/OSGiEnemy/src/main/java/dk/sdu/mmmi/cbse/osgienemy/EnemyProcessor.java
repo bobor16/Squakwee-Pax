@@ -32,6 +32,13 @@ public class EnemyProcessor implements IEntityProcessingService {
         for (Entity entity : world.getEntities(Enemy.class)) {
             PositionPart positionPart = entity.getPart(PositionPart.class);
             MovingPart movingPart = entity.getPart(MovingPart.class);
+            LifePart life = entity.getPart(LifePart.class);
+            if (life.isDead()) {
+                world.removeEntity(entity);
+                EnemyPlugin e = new EnemyPlugin();
+                world.addEntity(e.createEnemy(gameData, world));
+                return;
+            }
             if (world.getEntities(Player.class).size() != 0) {
                 Entity player = world.getEntities(Player.class).get(0);
                 PositionPart playerPosition = player.getPart(PositionPart.class);
@@ -41,52 +48,18 @@ public class EnemyProcessor implements IEntityProcessingService {
                     float[] destination = new float[2];
                     destination[0] = path.get(path.size() - 2)[0] * world.getTILESIZE();
                     destination[1] = path.get(path.size() - 2)[1] * world.getTILESIZE();
-                    System.out.println(destination[0] + " " + destination[1]);
                     movingPart.setDestination(destination);
-                    movingPart.process(gameData, entity);
-                    positionPart.process(gameData, entity);
-                    updateShape(entity);
-                    //System.out.println("Got a path to " + (int) (playerPosition.getX() / 16) + " " + (int) (playerPosition.getY() / 16));
-                    //a.displaySolution();
                 } else if (!path.isEmpty()) {
                     float[] destination = new float[2];
                     destination[0] = path.get(path.size() - 1)[0] * world.getTILESIZE();
                     destination[1] = path.get(path.size() - 1)[1] * world.getTILESIZE();
-                    System.out.println(destination[0] + " " + destination[1]);
                     movingPart.setDestination(destination);
-                    movingPart.process(gameData, entity);
-                    positionPart.process(gameData, entity);
-                    updateShape(entity);
-                } else {
-                    movingPart.process(gameData, entity);
-                    positionPart.process(gameData, entity);
-                    updateShape(entity);
                 }
+                life.process(gameData, entity);
+                movingPart.process(gameData, entity);
+                positionPart.process(gameData, entity);
             }
         }
-    }
-
-    private void updateShape(Entity entity) {
-//        float[] shapex = entity.getShapeX();
-//        float[] shapey = entity.getShapeY();
-//        PositionPart positionPart = entity.getPart(PositionPart.class);
-//        float x = positionPart.getX();
-//        float y = positionPart.getY();
-//        float radians = positionPart.getRadians();
-
-//        shapex[0] = (float) (x + Math.cos(radians) * 8);
-//        shapey[0] = (float) (y + Math.sin(radians) * 8);
-//
-//        shapex[1] = (float) (x + Math.cos(radians - 4 * 3.1415f / 5) * 8);
-//        shapey[1] = (float) (y + Math.sin(radians - 4 * 3.1145f / 5) * 8);
-//
-//        shapex[2] = (float) (x + Math.cos(radians + 3.1415f) * 5);
-//        shapey[2] = (float) (y + Math.sin(radians + 3.1415f) * 5);
-//
-//        shapex[3] = (float) (x + Math.cos(radians + 4 * 3.1415f / 5) * 8);
-//        shapey[3] = (float) (y + Math.sin(radians + 4 * 3.1415f / 5) * 8);
-//        entity.setShapeX(shapex);
-//        entity.setShapeY(shapey);
     }
 
 }

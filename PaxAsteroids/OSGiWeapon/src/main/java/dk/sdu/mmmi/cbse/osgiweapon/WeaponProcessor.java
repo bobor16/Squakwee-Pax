@@ -38,7 +38,6 @@ public class WeaponProcessor implements IEntityProcessingService {
                 MovingPart movingPart = weapon.getPart(MovingPart.class);
 
                 if (gameData.getKeys().isDown(SPACE)) {
-                    System.out.println(this.bulletService);
                     world.addEntity(this.bulletService.createBullet(weapon, gameData));
                     gameData.getKeys().setKey(SPACE, false);
                 }
@@ -52,8 +51,6 @@ public class WeaponProcessor implements IEntityProcessingService {
     public void setBulletService(BulletSPI bulletService) {
         this.bulletService = bulletService;
         System.out.println("Registered bulletService");
-        System.out.println(bulletService);
-        System.out.println(this.bulletService);
     }
 
     public void removeBulletService(BulletSPI bulletService) {

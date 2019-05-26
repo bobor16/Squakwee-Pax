@@ -25,11 +25,6 @@ import org.osgi.framework.FrameworkUtil;
 public class WeaponPlugin implements IGamePluginService {
 
     private String weaponID;
-    private BundleContext bundleContext;
-
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
 
     public WeaponPlugin() {
     }
@@ -40,27 +35,19 @@ public class WeaponPlugin implements IGamePluginService {
         System.out.println("starting weapon");
         Entity weapon = createWeapon(gameData, world);
         weaponID = world.addEntity(weapon);
-        this.bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
-
     }
 
     private Entity createWeapon(GameData gameData, World world) {
 
         Entity weapon = new Weapon();
         float speed = 150;
-        //float deceleration = 1000;
 
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
         weapon.add(new MovingPart(speed));
 
-        String filename = "/weapon.png";
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
-        System.out.println(WeaponPlugin.class);
 
-        String spriteLocation = new File("").getAbsolutePath() + "/bundles/OSGiWeapon_1.0.0.SNAPSHOT.jar!/weapon.png";
-        spriteLocation = spriteLocation.replace("\\", "/");
-        System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
+        String spriteLocation = (new File("").getAbsolutePath()).replace("\\", "/") + "/bundles/OSGiWeapon_1.0.0.SNAPSHOT.jar!/weapon.png";
         weapon.add(new SpritePart(spriteLocation));
 
         return weapon;

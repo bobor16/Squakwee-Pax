@@ -11,7 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author jcs
  */
 public class World {
+
     private int TILESIZE;
+    private final Map<String, Entity> entityMap = new ConcurrentHashMap<>();
+    private float[] playerSpawn = {4, 56};
 
     public int getTILESIZE() {
         return TILESIZE;
@@ -29,8 +32,6 @@ public class World {
     public void setBlockedMap(int[][] blockedMap) {
         this.blockedMap = blockedMap;
     }
-    private final Map<String, Entity> entityMap = new ConcurrentHashMap<>();
-    private float[] playerSpawn = {4, 56};
 
     public float[] getPlayerSpawn() {
         return playerSpawn;

@@ -47,12 +47,9 @@ public class EnemyPlugin implements IGamePluginService {
         enemyID = world.addEntity(enemy);
     }
 
-    private Entity createEnemy(GameData gameData, World world) {
+    public Entity createEnemy(GameData gameData, World world) {
         Entity enemy = new Enemy();
         float speed = 50;
-        float deceleration = 1000;
-        float x = world.getPlayerSpawn()[0];
-        float y = world.getPlayerSpawn()[1];
         float radians = 3.1415f / 2;
         enemy.add(new LifePart(3, 69));
         enemy.setRadius(4);
@@ -60,10 +57,7 @@ public class EnemyPlugin implements IGamePluginService {
         moving.setDestination(new float[]{295, 140});
         enemy.add(moving);
         enemy.add(new PositionPart(295, 140, radians));
-        System.out.println(EnemyPlugin.class);
-        System.out.println(FileSystems.getDefault().getPath(".").toAbsolutePath());
         String spriteLocation = (new File("").getAbsolutePath()).replace("\\", "/") + "/bundles/OSGiEnemy_1.0.0.SNAPSHOT.jar!/Chicken.png";
-        System.out.println(spriteLocation);
         enemy.add(new SpritePart(spriteLocation));
         enemy.add(new CollisionPart());
 

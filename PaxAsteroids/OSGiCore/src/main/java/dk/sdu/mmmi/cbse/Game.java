@@ -153,9 +153,9 @@ public class Game implements ApplicationListener {
         cam.translate(w, h);
         batch = new SpriteBatch();
 
-//        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
-//        music_level1.setLooping(true);
-//        music_level1.play();
+        music_level1 = Gdx.audio.newMusic(Gdx.files.internal(this.gameData.getMusic()));
+        music_level1.setLooping(true);
+        music_level1.play();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
         objectLayer = map.getLayers().get(aiKey);
