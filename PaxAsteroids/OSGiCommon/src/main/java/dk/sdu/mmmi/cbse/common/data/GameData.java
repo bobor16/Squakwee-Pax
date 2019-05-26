@@ -10,6 +10,15 @@ public class GameData {
     private float delta;
     private int displayWidth;
     private int displayHeight;
+    private String map;
+
+    public String getMap() {
+        return map;
+    }
+
+    public void setMap(String map) {
+        this.map = map;
+    }
     private final GameKeys keys = new GameKeys();
     private List<Event> events = new CopyOnWriteArrayList<>();
 

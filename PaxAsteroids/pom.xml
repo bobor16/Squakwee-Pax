@@ -54,6 +54,7 @@
         <module>OSGiCommon</module>
         <module>OSGiCommonAsteroids</module>
         <module>OSGiCommonPlayer</module>
+        <module>OSGiMap</module>
         <module>OSGiPlayer</module>
         <module>OSGiLibGDX</module>
         <module>OSGiCollision</module>
@@ -63,7 +64,7 @@
         <module>OSGiCommenWeapon</module>
         <module>OSGiCommonBullet</module>
         <module>OSGiBullet</module>
-  </modules>
+    </modules>
 
     <build>
         <plugins>

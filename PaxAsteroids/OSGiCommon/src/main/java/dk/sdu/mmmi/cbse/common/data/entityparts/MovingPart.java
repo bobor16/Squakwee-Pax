@@ -19,10 +19,22 @@ public class MovingPart implements EntityPart {
     private double dx, dy;
     private float speed;
     private boolean left, right, up, down, moving;
+    private boolean ai;
+    private float[] destination;
+
+    public void setDestination(float[] destination) {
+        this.destination = destination;
+    }
 
     public MovingPart(float Speed) {
         this.speed = Speed;
+        this.ai = false;
 
+    }
+
+    public MovingPart(float speed, boolean ai) {
+        this.speed = speed;
+        this.ai = ai;
     }
 
     public double getDx() {
@@ -81,6 +93,13 @@ public class MovingPart implements EntityPart {
         float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
+        if (ai) {
+//            float targetRadians = (float) Math.atan2(y - this.destination[1], x - this.destination[0]);
+            float targetRadians = (float) Math.atan2(this.destination[1] - y, this.destination[0] - x);
+
+            dx = speed * Math.cos(targetRadians);
+            dy = speed * Math.sin(targetRadians);
+        }
         if (left) {
             dy = 0;
             dx = -speed;
@@ -134,10 +153,10 @@ public class MovingPart implements EntityPart {
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
-        if (!isDown() && !isUp()) {
+        if (!isDown() && !isUp() && !ai) {
             dy = 0;
         }
-        if (!isLeft() && !isRight()) {
+        if (!isLeft() && !isRight() && !ai) {
             dx = 0;
         }
         if (vec > speed) {
@@ -160,6 +179,10 @@ public class MovingPart implements EntityPart {
             y = gameData.getDisplayHeight();
         }
 
+        if (ai) {
+            System.out.println("dx " + dx + " dy " + dy);
+
+        }
         positionPart.setX(x);
         positionPart.setY(y);
 

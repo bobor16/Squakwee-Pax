@@ -16,6 +16,15 @@ import dk.sdu.mmmi.cbse.common.data.entityparts.SpritePart;
 import dk.sdu.mmmi.cbse.common.enemy.Enemy;
 import dk.sdu.mmmi.cbse.common.services.IGamePluginService;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 
 /**
  *
@@ -32,28 +41,28 @@ public class EnemyPlugin implements IGamePluginService {
     public void start(GameData gameData, World world) {
         // Add entities to the world
         System.out.println("starting enemy");
+
         Entity enemy = createEnemy(gameData, world);
         enemyID = world.addEntity(enemy);
     }
 
     private Entity createEnemy(GameData gameData, World world) {
         Entity enemy = new Enemy();
-        float speed = 150;
+        float speed = 50;
         float deceleration = 1000;
         float x = world.getPlayerSpawn()[0];
         float y = world.getPlayerSpawn()[1];
         float radians = 3.1415f / 2;
         enemy.add(new LifePart(3, 69));
         enemy.setRadius(4);
-        enemy.add(new MovingPart(speed));
+        MovingPart moving = new MovingPart(speed, true);
+        moving.setDestination(new float[]{295, 140});
+        enemy.add(moving);
         enemy.add(new PositionPart(295, 140, radians));
-        String filename = "/Chicken.png";
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(EnemyPlugin.class);
-        File file = new File(EnemyPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiEnemy/src/main/resources/Chicken.png";
-        System.out.println(new File("").getAbsolutePath() + "/target");
-        System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
+        System.out.println(FileSystems.getDefault().getPath(".").toAbsolutePath());
+        String spriteLocation = (new File("").getAbsolutePath()).replace("\\", "/") + "/bundles/OSGiEnemy_1.0.0.SNAPSHOT.jar!/Chicken.png";
+        System.out.println(spriteLocation);
         enemy.add(new SpritePart(spriteLocation));
         enemy.add(new CollisionPart());
 
@@ -66,5 +75,4 @@ public class EnemyPlugin implements IGamePluginService {
         System.out.println("stopping enemy");
         world.removeEntity(enemyID);
     }
-
 }

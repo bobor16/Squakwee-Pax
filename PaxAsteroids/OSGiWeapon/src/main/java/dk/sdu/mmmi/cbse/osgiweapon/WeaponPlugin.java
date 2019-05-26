@@ -49,7 +49,7 @@ public class WeaponPlugin implements IGamePluginService {
         Entity weapon = new Weapon();
         float speed = 150;
         //float deceleration = 1000;
-        
+
         weapon.add(new LifePart(3, 69));
         weapon.setRadius(4);
         weapon.add(new MovingPart(speed));
@@ -57,9 +57,9 @@ public class WeaponPlugin implements IGamePluginService {
         String filename = "/weapon.png";
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(WeaponPlugin.class);
-        File file = new File(WeaponPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiWeapon/src/main/resources/weapon.png";
-        System.out.println(new File("").getAbsolutePath() + "/target");
+
+        String spriteLocation = new File("").getAbsolutePath() + "/bundles/OSGiWeapon_1.0.0.SNAPSHOT.jar!/weapon.png";
+        spriteLocation = spriteLocation.replace("\\", "/");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         weapon.add(new SpritePart(spriteLocation));
 

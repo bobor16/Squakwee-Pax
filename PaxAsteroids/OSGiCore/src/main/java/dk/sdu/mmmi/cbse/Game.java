@@ -52,6 +52,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
+import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolver;
+import java.io.File;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -84,12 +87,13 @@ public class Game implements ApplicationListener {
     private String playerSpawn = "playerSpawn";
     private String blockedLayer = "blockedLayer";
     private TiledMapTileSet s;
-    
+
     //Mouse position
     private final Vector2 mouseInWorld2D = new Vector2();
     private final Vector3 mouseInWorld3D = new Vector3();
     private Sprite mapSprite;
     private String objectKey = "objectLayer";
+    private String aiKey = "aiLayer";
 
     //Spawn
     private MapLayer spawnLayer;
@@ -124,21 +128,25 @@ public class Game implements ApplicationListener {
         new LwjglApplication(this, cfg);
     }
 
-    private TiledMap loadMap() {
+    private TiledMap loadMap(String location) {
         TmxMapLoader loader = new TmxMapLoader();
-        map = loader.load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap2.tmx");
+        map = loader.load(location);
         return map;
 
     }
 
     @Override
     public void create() {
+        AssetsJarFileResolver resolver = new AssetsJarFileResolver();
+        assetManager = new AssetManager(resolver);
+        this.world.setTILESIZE(8);
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
 
         float w = gameData.getDisplayWidth() / 2;
         float h = gameData.getDisplayHeight() / 2;
-        loadMap();
+        System.out.println("Load Map");
+        loadMap(this.gameData.getMap());
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
 
@@ -149,44 +157,47 @@ public class Game implements ApplicationListener {
         cam = new OrthographicCamera(w, h);
         cam.setToOrtho(false, w, h);
         cam.translate(w, h);
-        //AssetsJarFileResolver resolver = new AssetsJarFileResolver();
-        assetManager = new AssetManager();
         batch = new SpriteBatch();
 
-        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
-        music_level1.setLooping(true);
-        music_level1.play();
+//        music_level1 = Gdx.audio.newMusic(Gdx.files.internal("C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\music\\level1.ogg"));
+//        music_level1.setLooping(true);
+//        music_level1.play();
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
-        int[][] blockedMap = new int[50][25];
-        for (int[] is : blockedMap) {
-            for (int i : is) {
-                i = 0;
-            }
-        }
-        objectLayer = map.getLayers().get(objectKey);
+        objectLayer = map.getLayers().get(aiKey);
         MapObjects objects = objectLayer.getObjects();
+//        int[][] blockedMap = new int[50][25];
+        int[][] blockedMap = new int[100 * 50][2];
+//        for (int[] is : blockedMap) {
+//            for (int i : is) {
+//                i = 0;
+//            }
+//        }
+        int k = 0;
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-            int tx = (int) (rectangleObject.getRectangle().getX() / 16);
-            int ty = (int) (rectangleObject.getRectangle().getY() / 16);
-            int width = (int) (rectangleObject.getRectangle().getWidth() / 16);
-            int height = (int) (rectangleObject.getRectangle().getHeight() / 16);
+            int tx = (int) (rectangleObject.getRectangle().getX() / this.world.getTILESIZE());
+            int ty = (int) (rectangleObject.getRectangle().getY() / this.world.getTILESIZE());
+            int width = (int) (rectangleObject.getRectangle().getWidth() / this.world.getTILESIZE());
+            int height = (int) (rectangleObject.getRectangle().getHeight() / this.world.getTILESIZE());
             System.out.println(tx + " " + ty);
             for (int i = 0; i <= width - 1; i++) {
                 for (int j = 0; j <= height - 1; j++) {
-                    blockedMap[tx + i][ty + j] = 1;
+                    blockedMap[k] = new int[]{tx + i, ty + j};
+//                    blockedMap[tx + i][ty + j] = 1;
+                    k++;
                 }
             }
         }
 
-        String line = "";
-        for (int[] is : blockedMap) {
-            for (int i : is) {
-                line = line + i;
-            }
-            System.out.println(line);
-            line = "";
-        }
+//        String line = "";
+//        for (int[] is : blockedMap) {
+//            for (int i : is) {
+//                line = line + i;
+//            }
+//            System.out.println(line);
+//            line = "";
+//        }
+        this.world.setBlockedMap(blockedMap);
     }
 
     private int blockedTile() {
@@ -234,17 +245,16 @@ public class Game implements ApplicationListener {
 
         update();
         draw();
-        
+
         mouseInWorld3D.x = Gdx.input.getX();
         mouseInWorld3D.y = Gdx.input.getY();
         mouseInWorld3D.z = 0;
-        
+
         cam.unproject(mouseInWorld3D);
         mouseInWorld2D.x = mouseInWorld3D.x;
         mouseInWorld2D.y = mouseInWorld3D.y;
-        
-        System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
 
+        //System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
         sr = new ShapeRenderer();
     }
 
@@ -427,7 +437,7 @@ public class Game implements ApplicationListener {
                 sprite.setPosition(position.getX(), position.getY());
 
                 sprites.put(entity.getID(), sprite);
-                sprite.setSize(15, 20);
+                sprite.setSize(10, 15);
             }
         }
         batch.end();

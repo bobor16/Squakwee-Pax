@@ -58,8 +58,9 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         System.out.println(BulletPlugin.class);
         File file = new File(BulletPlugin.class.getResource(filename).getFile());
-        String spriteLocation = "C:/Users/borga/Documents/NetBeansProjects/Squakwee-Pax/PaxAsteroids/OSGiBullet/src/main/resources/bullet.png";
-        System.out.println(new File("").getAbsolutePath() + "/target");
+
+String spriteLocation = new File("").getAbsolutePath() + "/bundles/OSGiBullet_1.0.0.SNAPSHOT.jar!/bullet.png";
+        spriteLocation = spriteLocation.replace("\\", "/");        System.out.println(new File("").getAbsolutePath() + "/target");
         System.out.println(spriteLocation);/*+ "C:\\Users\\rasmu\\OneDrive\\Dokumenter\\Squakwee-Pax\\PaxAsteroids\\OSGiPlayer\\target\\OSGiPlayer-1.0-SNAPSHOT.jar!/Assets/player.png";*/
         bullet.add(new SpritePart(spriteLocation));
 
