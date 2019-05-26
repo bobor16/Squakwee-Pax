@@ -180,11 +180,7 @@ public class MovingPart implements EntityPart {
         } else if (y < 0) {
             y = gameData.getDisplayHeight();
         }
-
-        if (ai) {
-            System.out.println("dx " + dx + " dy " + dy);
-
-        }
+        
         positionPart.setX(x);
         positionPart.setY(y);
 

@@ -139,7 +139,6 @@ public class Game implements ApplicationListener {
 
         float w = gameData.getDisplayWidth() / 2;
         float h = gameData.getDisplayHeight() / 2;
-        System.out.println("Load Map");
         loadMap(this.gameData.getMap());
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -147,7 +146,6 @@ public class Game implements ApplicationListener {
         MapProperties props = map.getProperties();
         levelWidth = props.get("width", Integer.class);
         levelHeight = props.get("height", Integer.class);
-        System.out.println("Height: " + levelHeight + "\nWidth: " + levelWidth);
         cam = new OrthographicCamera(w, h);
         cam.setToOrtho(false, w, h);
         cam.translate(w, h);
@@ -160,67 +158,23 @@ public class Game implements ApplicationListener {
 
         objectLayer = map.getLayers().get(aiKey);
         MapObjects objects = objectLayer.getObjects();
-//        int[][] blockedMap = new int[50][25];
         int[][] blockedMap = new int[100 * 50][2];
-//        for (int[] is : blockedMap) {
-//            for (int i : is) {
-//                i = 0;
-//            }
-//        }
         int k = 0;
         for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
             int tx = (int) (rectangleObject.getRectangle().getX() / this.world.getTILESIZE());
             int ty = (int) (rectangleObject.getRectangle().getY() / this.world.getTILESIZE());
             int width = (int) (rectangleObject.getRectangle().getWidth() / this.world.getTILESIZE());
             int height = (int) (rectangleObject.getRectangle().getHeight() / this.world.getTILESIZE());
-            System.out.println(tx + " " + ty);
             for (int i = 0; i <= width - 1; i++) {
                 for (int j = 0; j <= height - 1; j++) {
                     blockedMap[k] = new int[]{tx + i, ty + j};
-//                    blockedMap[tx + i][ty + j] = 1;
                     k++;
                 }
             }
         }
-
-//        String line = "";
-//        for (int[] is : blockedMap) {
-//            for (int i : is) {
-//                line = line + i;
-//            }
-//            System.out.println(line);
-//            line = "";
-//        }
         this.world.setBlockedMap(blockedMap);
     }
 
-    private int blockedTile() {
-        ArrayList<ArrayList<Integer>> listOfTiles = new ArrayList();
-        MapObjects mapObjects = map.getLayers().get(2).getObjects();
-        int isBlocked = 0;
-        for (MapObject mapObject : mapObjects) {
-            if (mapObject.getProperties().containsKey("blocked")) {
-                isBlocked = 1;
-            }
-        }
-
-//        int x = mapObjects.getCount();
-//        System.out.println(x);
-        return isBlocked;
-    }
-
-//    public void spawnPlayer() {
-//        spawnLayer = map.getLayers().get("objectLayer");
-//        MapObjects objects = spawnLayer.getObjects();
-//
-//        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-//            if (rectangleObject.getProperties().containsKey("bed")) {
-//                float[] playerSpawn = {rectangleObject.getRectangle().x, rectangleObject.getRectangle().y};
-//                world.setPlayerSpawn(playerSpawn);
-//                System.out.println("Player spawn");
-//            }
-//        }
-//    }
     @Override
     public void dispose() {
         map.dispose();
@@ -236,32 +190,13 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
-//        cam.unproject(mouseInWorld3D); fejl her
         update();
         draw();
-
-//        mouseInWorld3D.x = Gdx.input.getX();
-//        mouseInWorld3D.y = Gdx.input.getY();
-//        mouseInWorld3D.z = 0;
-//
-//        cam.unproject(mouseInWorld3D);
-//        mouseInWorld2D.x = mouseInWorld3D.x;
-//        mouseInWorld2D.y = mouseInWorld3D.y;
-//        System.out.println(mouseInWorld2D.x + " " + mouseInWorld2D.y);
         sr = new ShapeRenderer();
     }
 
     @Override
     public void resize(int width, int height) {
-    }
-
-    public void changeMap() {
-//        Gdx.app.postRunnable(() -> {
-        cave = new TmxMapLoader().load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
-        renderer.getMap().dispose();
-        renderer.setMap(cave);
-        System.out.println("Hello from inside the cave");
-//        });
     }
 
     private void update() {
@@ -312,7 +247,6 @@ public class Game implements ApplicationListener {
                         if (rectangleObject.getProperties().containsKey(blockedKey)) {
                             Rectangle rectangle = rectangleObject.getRectangle();
                             if (Intersector.overlaps(rectangle, entityRect)) {
-//                                System.out.println(entity.getID() + " colliding with object");
                                 if (b != null) {
                                     world.removeEntity(entity);
                                 }
@@ -350,7 +284,6 @@ public class Game implements ApplicationListener {
                             otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
 
                             if (Intersector.overlaps(otherEntityRect, entityRect)) {
-//                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
 
                                 LifePart l = otherEntity.getPart(LifePart.class);
                                 if (b != null && l != null) {
@@ -366,7 +299,6 @@ public class Game implements ApplicationListener {
                             Rectangle otherEntityRect = rectPool.obtain();
                             otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
                             if (Intersector.overlaps(otherEntityRect, entityRect)) {
-//                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
                                 collision.setIsColliding(true);
                                 break;
                             }
@@ -379,9 +311,6 @@ public class Game implements ApplicationListener {
                     } else {
                         position.setOldX(position.getX());
                         position.setOldY(position.getY());
-
-                        //Get x & y for the player position
-//                    System.out.println("x: " + position.getX() + " y: " + position.getY());
                     }
 
                     if (entity.getPart(CameraPart.class) != null) {
@@ -432,22 +361,8 @@ public class Game implements ApplicationListener {
                 this.assetManager.load(location, Texture.class
                 );
                 this.assetManager.update();
-//                System.out.println(this.assetManager.getLoadedAssets());
 
                 while (!this.assetManager.update()) {
-                    //System.out.println(this.assetManager.getProgress());
-                }
-//                System.out.println(this.assetManager.getLoadedAssets());
-                for (String assetName : this.assetManager.getAssetNames()) {
-//                    System.out.println(assetName);
-
-                }
-                if (this.assetManager.isLoaded(location, Texture.class
-                )) {
-//                    System.out.println("Sprite Loaded");
-                } else {
-//                    System.out.println("Sprite Not Loaded");
-
                 }
 
                 Sprite sprite = new Sprite(this.assetManager.get(location, Texture.class

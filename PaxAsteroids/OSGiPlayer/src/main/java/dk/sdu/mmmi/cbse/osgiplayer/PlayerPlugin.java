@@ -36,7 +36,6 @@ public class PlayerPlugin implements IGamePluginService {
         player.add(new MovingPart(speed));
         // x = 317 y = 312
         player.add(new PositionPart(317, 312, radians));
-        System.out.println(PlayerPlugin.class);
         String spriteLocation = (new File("").getAbsolutePath()).replace("\\", "/") + "/bundles/OSGiPlayer_1.0.0.SNAPSHOT.jar!/player.png";
         player.add(new SpritePart(spriteLocation));
         player.add(new CollisionPart());

@@ -24,7 +24,6 @@ public class MapPlugin implements IGamePluginService {
 
     @Override
     public void start(GameData gameData, World world) {
-        System.out.println("Set map");
         copy(getClass().getResourceAsStream("/maps/animThings.tsx"), FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/maps/animThings.tsx");
         copy(getClass().getResourceAsStream("/maps/basictiles.png"), FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/maps/basictiles.png");
         copy(getClass().getResourceAsStream("/maps/things.png"), FileSystems.getDefault().getPath("").toAbsolutePath() + "/assets/maps/things.png");
