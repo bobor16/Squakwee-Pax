@@ -17,13 +17,25 @@ import dk.sdu.mmmi.cbse.common.services.IPostEntityProcessingService;
 public class CollisionPart implements EntityPart {
 
     private boolean isColliding;
+
+    private boolean bulletCollision;
+
     @Override
     public void process(GameData gameData, Entity entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    public CollisionPart(){
+
+    public CollisionPart() {
         this.isColliding = false;
+        this.bulletCollision = true;
+    }
+
+    public boolean isBulletCollision() {
+        return bulletCollision;
+    }
+
+    public void setBulletCollision(boolean bulletCollision) {
+        this.bulletCollision = bulletCollision;
     }
 
     public boolean isColliding() {

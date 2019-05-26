@@ -40,23 +40,19 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CameraPart;
 import dk.sdu.mmmi.cbse.common.data.entityparts.CollisionPart;
 import dk.sdu.mmmi.cbse.core.managers.AssetsJarFileResolver;
 import java.io.File;
 import java.nio.file.FileSystems;
+import dk.sdu.mmmi.cbse.common.data.entityparts.BulletPart;
+import dk.sdu.mmmi.cbse.common.data.entityparts.LifePart;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Game implements ApplicationListener {
 
@@ -89,8 +85,6 @@ public class Game implements ApplicationListener {
     private TiledMapTileSet s;
 
     //Mouse position
-    private final Vector2 mouseInWorld2D = new Vector2();
-    private final Vector3 mouseInWorld3D = new Vector3();
     private Sprite mapSprite;
     private String objectKey = "objectLayer";
     private String aiKey = "aiLayer";
@@ -242,19 +236,18 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
-
+//        cam.unproject(mouseInWorld3D); fejl her
         update();
         draw();
 
-        mouseInWorld3D.x = Gdx.input.getX();
-        mouseInWorld3D.y = Gdx.input.getY();
-        mouseInWorld3D.z = 0;
-
-        cam.unproject(mouseInWorld3D);
-        mouseInWorld2D.x = mouseInWorld3D.x;
-        mouseInWorld2D.y = mouseInWorld3D.y;
-
-        //System.out.println(mouseInWorld2D.x + " " +  mouseInWorld2D.y);
+//        mouseInWorld3D.x = Gdx.input.getX();
+//        mouseInWorld3D.y = Gdx.input.getY();
+//        mouseInWorld3D.z = 0;
+//
+//        cam.unproject(mouseInWorld3D);
+//        mouseInWorld2D.x = mouseInWorld3D.x;
+//        mouseInWorld2D.y = mouseInWorld3D.y;
+//        System.out.println(mouseInWorld2D.x + " " + mouseInWorld2D.y);
         sr = new ShapeRenderer();
     }
 
@@ -264,7 +257,7 @@ public class Game implements ApplicationListener {
 
     public void changeMap() {
 //        Gdx.app.postRunnable(() -> {
-        cave = new TmxMapLoader().load("C:\\Users\\borga\\Documents\\NetBeansProjects\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
+        cave = new TmxMapLoader().load("C:\\Users\\marti\\OneDrive - Syddansk Universitet\\Netbeans projekter\\Squakwee-Pax\\PaxAsteroids\\OSGiCore\\src\\main\\java\\dk\\sdu\\mmmi\\cbse\\assets\\maps\\TileMap.tmx");
         renderer.getMap().dispose();
         renderer.setMap(cave);
         System.out.println("Hello from inside the cave");
@@ -291,9 +284,11 @@ public class Game implements ApplicationListener {
                 PositionPart position = entity.getPart(PositionPart.class);
                 Sprite sprite = this.sprites.get(entity.getID());
                 sprite.setPosition(position.getX(), position.getY());
-
+                CollisionPart collision = entity.getPart(CollisionPart.class);
+                BulletPart b = entity.getPart(BulletPart.class);
                 Rectangle entityRect = rectPool.obtain();
                 entityRect.set(position.getX(), position.getY(), sprite.getWidth(), sprite.getHeight());
+
                 objectLayer = map.getLayers().get(objectKey);
                 MapObjects objects = objectLayer.getObjects();
 
@@ -310,17 +305,7 @@ public class Game implements ApplicationListener {
                         }
                     }
                 }
-                // test
-                if (enterCave) {
-                    int j = 1;
-                    for (int i = 0; i <= j; i++) {
-                        if (i == 1) {
-//                            System.out.println("The door is locked! ");
-                        }
-                    }
-                }
 
-                CollisionPart collision = entity.getPart(CollisionPart.class);
                 if (collision != null) {
                     collision.setIsColliding(false);
                     for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
@@ -328,16 +313,53 @@ public class Game implements ApplicationListener {
                             Rectangle rectangle = rectangleObject.getRectangle();
                             if (Intersector.overlaps(rectangle, entityRect)) {
 //                                System.out.println(entity.getID() + " colliding with object");
+                                if (b != null) {
+                                    world.removeEntity(entity);
+                                }
                                 collision.setIsColliding(true);
                                 break;
                             }
                         }
                     }
 
+                    for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+                        if (rectangleObject.getProperties().containsKey("caveDoor")) {
+                            Rectangle rect = rectangleObject.getRectangle();
+                            if (Intersector.overlaps(rect, entityRect)) {
+                                enterCave = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (enterCave) {
+                        map.getLayers().get("topLayer").setVisible(false);
+                        map.getLayers().get("bottomLayer").setVisible(false);
+                        map.getLayers().get("caveLayer").setVisible(true);
+                        map.getLayers().get("caveLayer2").setVisible(true);
+                    }
+
                     for (Entity otherEntity : world.getEntities()) {
                         Sprite s = this.sprites.get(otherEntity.getID());
                         CollisionPart otherCollision = otherEntity.getPart(CollisionPart.class);
+                        BulletPart t = otherEntity.getPart(BulletPart.class);
                         if (entity.getID().equals(otherEntity.getID()) || otherCollision == null || s == null) {
+
+                        } else if (b != null) {
+                            PositionPart p = otherEntity.getPart(PositionPart.class);
+                            Rectangle otherEntityRect = rectPool.obtain();
+                            otherEntityRect.set(p.getX(), p.getY(), s.getWidth(), s.getHeight());
+
+                            if (Intersector.overlaps(otherEntityRect, entityRect)) {
+//                                System.out.println(entity.getID() + " colliding with " + otherEntity.getID());
+
+                                LifePart l = otherEntity.getPart(LifePart.class);
+                                if (b != null && l != null) {
+                                    l.hit();
+                                    world.removeEntity(entity);
+                                }
+                                break;
+                            }
+                        } else if (t != null) {
 
                         } else {
                             PositionPart p = otherEntity.getPart(PositionPart.class);
@@ -361,20 +383,17 @@ public class Game implements ApplicationListener {
                         //Get x & y for the player position
 //                    System.out.println("x: " + position.getX() + " y: " + position.getY());
                     }
-                }
 
-                blockedTile();
-                if (entity.getPart(CameraPart.class) != null) {
-
-                    cam.position.set(sprite.getX(), sprite.getY(), 0);
-                    float startX = cam.viewportWidth / 2;
-                    float startY = cam.viewportHeight / 2;
-                    boundary(cam, startX, startY, levelWidth * 16 - startX * 2, levelHeight * 16 - startY * 2);
-                    tiledMapRenderer.setView(cam);
-                    batch.setProjectionMatrix(cam.combined);
-                    sr.setProjectionMatrix(cam.combined);
-                    cam.update();
-
+                    if (entity.getPart(CameraPart.class) != null) {
+                        cam.position.set(sprite.getX(), sprite.getY(), 0);
+                        float startX = cam.viewportWidth / 2;
+                        float startY = cam.viewportHeight / 2;
+                        boundary(cam, startX, startY, levelWidth * 16 - startX * 2, levelHeight * 16 - startY * 2);
+                        tiledMapRenderer.setView(cam);
+                        batch.setProjectionMatrix(cam.combined);
+                        sr.setProjectionMatrix(cam.combined);
+                        cam.update();
+                    }
                 }
             }
         }
@@ -414,6 +433,7 @@ public class Game implements ApplicationListener {
                 );
                 this.assetManager.update();
 //                System.out.println(this.assetManager.getLoadedAssets());
+
                 while (!this.assetManager.update()) {
                     //System.out.println(this.assetManager.getProgress());
                 }

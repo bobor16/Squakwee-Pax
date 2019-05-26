@@ -29,6 +29,7 @@ public class WeaponProcessor implements IEntityProcessingService {
         for (Entity weapon : world.getEntities(Weapon.class)) {
             for (Entity player : world.getEntities(Player.class)) {
                 PositionPart positionPart = player.getPart(PositionPart.class);
+                PositionPart positionPartWeapon = weapon.getPart(PositionPart.class);
                 float x = positionPart.getX();
                 float y = positionPart.getY();
                 float r = positionPart.getRadians();
@@ -39,8 +40,8 @@ public class WeaponProcessor implements IEntityProcessingService {
                 if (gameData.getKeys().isDown(SPACE)) {
                     System.out.println(this.bulletService);
                     world.addEntity(this.bulletService.createBullet(weapon, gameData));
+                    gameData.getKeys().setKey(SPACE, false);
                 }
-
                 movingPart.process(gameData, weapon);
                 positionPart.process(gameData, weapon);
 

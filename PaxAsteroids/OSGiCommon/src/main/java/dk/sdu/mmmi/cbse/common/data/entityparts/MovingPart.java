@@ -15,7 +15,6 @@ import static java.lang.Math.sqrt;
  * @author Alexander
  */
 public class MovingPart implements EntityPart {
-
     private double dx, dy;
     private float speed;
     private boolean left, right, up, down, moving;
@@ -30,6 +29,9 @@ public class MovingPart implements EntityPart {
         this.speed = Speed;
         this.ai = false;
 
+    public MovingPart(float Speed, float radians) {
+        this.speed = Speed;
+        this.radians = radians;
     }
 
     public MovingPart(float speed, boolean ai) {
@@ -53,8 +55,16 @@ public class MovingPart implements EntityPart {
         this.left = left;
     }
 
+    public void setMouse(boolean mouse) {
+        this.mouse = mouse;
+    }
+
     public float getSpeed() {
         return speed;
+    }
+
+    public boolean isMouse() {
+        return mouse;
     }
 
     public boolean isLeft() {
