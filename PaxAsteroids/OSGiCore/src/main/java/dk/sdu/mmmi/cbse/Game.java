@@ -225,7 +225,7 @@ public class Game implements ApplicationListener {
         gameData.getKeys().update();
         tiledMapRenderer.setView(cam);
         tiledMapRenderer.render();
-//cam.unproject(mouseInWorld3D); NOK FEJL HER
+//        cam.unproject(mouseInWorld3D); fejl her
         update();
         draw();
 

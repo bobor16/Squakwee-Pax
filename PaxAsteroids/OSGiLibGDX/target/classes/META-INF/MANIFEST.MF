@@ -4,9 +4,13 @@ Bundle-SymbolicName: dk.sdu.mmmi.build.OSGiLibGDX
 Built-By: marti
 Bundle-ManifestVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 Bnd-LastModified: 1558692048736
 =======
 Bnd-LastModified: 1558689186066
+>>>>>>> master
+=======
+Bnd-LastModified: 1558709210529
 >>>>>>> master
 Embed-Dependency: *
 Import-Package: com.badlogic.gdx,com.badlogic.gdx.assets,com.badlogic.

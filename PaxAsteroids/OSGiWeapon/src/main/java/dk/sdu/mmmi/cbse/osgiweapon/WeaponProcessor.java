@@ -26,8 +26,7 @@ import dk.sdu.mmmi.osgicommonbullet.BulletSPI;
 public class WeaponProcessor implements IEntityProcessingService {
 
     private static BulletSPI bulletService;
-    private final Vector2 mouseInWorld2D = new Vector2();
-    private final Vector3 mouseInWorld3D = new Vector3();
+    
 
     @Override
     public void process(GameData gameData, World world) {
@@ -42,19 +41,9 @@ public class WeaponProcessor implements IEntityProcessingService {
                 weapon.add(new PositionPart(x, y, r));
                 MovingPart movingPart = weapon.getPart(MovingPart.class);
 
-                if (gameData.getKeys().isDown(SPACE)) {
-                    int graphicsX = Gdx.graphics.getHeight();
-                    mouseInWorld3D.x = Gdx.input.getX();
-                    mouseInWorld3D.y = Gdx.input.getY();
-                    mouseInWorld3D.z = 0;
-                    mouseInWorld2D.x = mouseInWorld3D.x;
-                    mouseInWorld2D.y = mouseInWorld3D.y;
-                    
-                    float radiansBullet = (float) Math.atan2(y - mouseInWorld2D.y, x - mouseInWorld2D.x);
-                    System.out.println("Radians bullet: " + radiansBullet);
-                    positionPartWeapon.setMouseRadians(radiansBullet);
+                if (gameData.getKeys().j(SPACE)) {
                     System.out.println(this.bulletService);
-                    world.addEntity(this.bulletService.createBullet(weapon, gameData));
+                    world.addEntity(this.bulletService.createBullet(weapon, gameData, 0, 0));
                 }
                 movingPart.process(gameData, weapon);
                 positionPart.process(gameData, weapon);

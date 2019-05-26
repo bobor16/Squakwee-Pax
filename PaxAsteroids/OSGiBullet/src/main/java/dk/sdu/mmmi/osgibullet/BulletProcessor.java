@@ -39,6 +39,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
             PositionPart positionPart = bullet.getPart(PositionPart.class);
             MovingPart movingPart = bullet.getPart(MovingPart.class);
             TimerPart timer = bullet.getPart(TimerPart.class);
+
             if(gameData.getKeys().isDown(UP)){
                 movingPart.setUp(true);
             }
@@ -51,6 +52,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
             if(gameData.getKeys().isDown(RIGHT)){
                 movingPart.setRight(true);
             }
+//            movingPart.setMouse(true); // FIKS KOORDINATOR I MOVING PART
             
             if (timer.getExpiration() < 0) {
                 world.removeEntity(bullet);
@@ -62,7 +64,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     }
 
     @Override
-    public Entity createBullet(Entity e, GameData gameData) {
+    public Entity createBullet(Entity e, GameData gameData, int mouseX, int mouseY) {
 
         PositionPart positionPart = e.getPart(PositionPart.class);
         float x = positionPart.getX();

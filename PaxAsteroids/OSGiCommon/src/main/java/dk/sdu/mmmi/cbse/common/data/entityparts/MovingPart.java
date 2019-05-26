@@ -18,7 +18,8 @@ import static java.lang.Math.sqrt;
  * @author Alexander
  */
 public class MovingPart implements EntityPart {
-
+private final Vector2 mouseInWorld2D = new Vector2();
+    private final Vector3 mouseInWorld3D = new Vector3();
     private double dx, dy;
     private float speed, radians;
     private boolean left, right, up, down, moving, mouse;
@@ -147,18 +148,34 @@ public class MovingPart implements EntityPart {
             dx = 0;
         }
         if (mouse) {
-            float angle = positionPart.getMouseRadians(); 
-            dx = speed * Math.cos(angle);
-            dy = speed * Math.sin(angle);
-//            System.out.println("dy: " + dy + " dx " + dx + " angle: " + angle);
+            // virker ikke ;(
+            int graphicsY = Gdx.graphics.getHeight();
+                       
+                    mouseInWorld3D.x = Gdx.input.getX();
+                    mouseInWorld3D.y = Gdx.input.getY();
+                    mouseInWorld3D.z = 0;
+                    mouseInWorld2D.x = mouseInWorld3D.x;
+                    mouseInWorld2D.y = mouseInWorld3D.y;
+                    // MOUSE KOORDINATOR ER KUN PÅ VINDUET DER VISES MEN PLAYERS KOORDINATOR ER I HELE MAPPET WTFF.F..F.F.F.FF..F.F.F.
+                    float radiansBullet = (float) Math.atan2(mouseInWorld2D.x - x, mouseInWorld2D.y - y);
+                    
+                    System.out.println("mouse X: " + mouseInWorld2D.x);
+                    System.out.println("mouse y: " + mouseInWorld2D.y);
+                    System.out.println("player X: " + x);
+                    System.out.println("player X: " + y);
+//            float angle = positionPart.getMouseRadians()
+            dx = speed * Math.cos(radiansBullet);
+            dy = speed * Math.sin(radiansBullet);
+                
+//            System.out.println("dy: " + dy + " dx " + dx + " angle: " + radiansBullet);
         }
 
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
-        if (!isDown() && !isUp()) {
+        if (!isDown() && !isUp() && !mouse) {
             dy = 0;
         }
-        if (!isLeft() && !isRight()) {
+        if (!isLeft() && !isRight() && !mouse) {
             dx = 0;
         }
         if (vec > speed) {
